@@ -1,3 +1,105 @@
+# ⚽ Video-Analysis-Agent-CoachAi
+
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
+![PyTorch](https://img.shields.io/badge/PyTorch-Deep%20Learning-ee4c2c)
+![Gemini](https://img.shields.io/badge/Google%20Gemini-AI%20Analysis-1a73e8)
+![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Mac-lightgrey)
+
+**An AI-Powered Football Tactical Analysis System** *Graduation Project - College of Computer and Information Sciences, Al Imam Mohammad Ibn Saud Islamic University.*
+
+## 📖 Overview
+CoachAi is an automated, end-to-end pipeline designed to act as an elite football tactical analyst. It extracts gameplay footage directly from YouTube, processes it through state-of-the-art Computer Vision models to detect complex tactical events, and utilizes Large Language Models (LLMs) to generate professional, coach-ready tactical reports and training recommendations.
+
+## 🏗️ System Architecture
+The pipeline operates in 4 distinct stages:
+1. **Data Ingestion:** Automated downloading of match clips via `yt-dlp`.
+2. **Computer Vision (Stage 1):** Running `SoccerNet` models to detect actions and ball movements (Device-Agnostic: supports CUDA and MPS).
+3. **Data Engineering (Stage 2):** Cleaning, merging, and grouping frames into distinct tactical phases using `pandas`.
+4. **LLM Analysis (Stages 3 & 4):** Uploading the video and structured CSV to Google Gemini 3.1 Flash to generate a detailed JSON tactical breakdown and a final Markdown comprehensive report.
+
+## ⚙️ Installation & Setup (For Developers)
+
+We enforce strict environment isolation. Please follow the instructions specific to your operating system.
+
+### 1. Clone the Repository
+```bash
+git clone [https://github.com/Marwan915/Video-Analysis-Agent-CoachAi.git](https://github.com/Marwan915/Video-Analysis-Agent-CoachAi.git)
+cd Video-Analysis-Agent-CoachAi
+
+```
+
+### 2. Create a Virtual Environment
+
+```bash
+python -m venv venv
+
+```
+
+### 3. Activate the Environment
+
+* **Windows:** `.\venv\Scripts\activate`
+* **Mac/Linux:** `source venv/bin/activate`
+
+### 4. Install Dependencies (OS Specific)
+
+Due to hardware acceleration differences (NVIDIA CUDA vs. Apple MPS), install the correct requirements file:
+
+* **For Windows (NVIDIA GPU):**
+```bash
+pip install -r requirements.txt
+
+```
+
+
+* **For Mac (Apple Silicon / Intel):**
+```bash
+pip install -r requirements-mac.txt
+
+```
+
+
+
+### 5. Environment Variables
+
+Create a file named `.env` in the root directory and add your Google Gemini API Key:
+
+```env
+GEMINI_API_KEY="your_api_key_here"
+
+```
+
+*(Note: Do not commit the `.env` file to version control. It is already ignored in `.gitignore`).*
+
+## 🚀 Usage
+
+To run the complete analysis pipeline:
+
+1. Open `run_but_youtube.py` .
+2. Replace the `YOUTUBE_URL` variable with your target match clip.
+3. Execute the script:
+
+```bash
+python run_but_youtube.py
+
+```
+
+or use the video path code in 
+```bash
+python run_pipeline.py
+
+```
+
+The system will automatically download the video, run the inference, and place the final reports in the `final_output/` directory.
+
+## 👥 Author
+
+* **Marwan** 
+
+
+
+
+using :
+
 # T-DEED
 ### T-DEED: Temporal-Discriminability Enhancer Encoder-Decoder for Precise Event Spotting in Sports Videos (CVsports '24)
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white"></a>
