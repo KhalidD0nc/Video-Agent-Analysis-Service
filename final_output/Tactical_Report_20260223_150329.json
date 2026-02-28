@@ -1,0 +1,50 @@
+[
+  {
+    "timestamp_interval": "02:20 - 03:11",
+    "phase_of_play": "Build-up",
+    "possession_team": "Barcelona",
+    "pitch_zone": "Middle Third - Central",
+    "event_type": "Vertical Pass",
+    "tactical_description": "Barcelona attempts to establish a structured build-up from the defensive line. They use short, lateral passes to draw out the Real Betis press before attempting a vertical entry into the midfield. Pedri (8) and Lamine Yamal (10), operating in more central roles, look to receive between the lines. The sequence is halted by a foul as the pressure from Betis intensifies in the central corridor.",
+    "success_rating": 7,
+    "key_tactical_insight": "Central overloads are effective for ball retention but require higher tempo to disrupt a compact mid-block.",
+    "coach_actionable_advice": "Encourage the pivot players to play one-touch into the attacking midfielders as soon as the opposition's front line is bypassed to prevent the block from resetting.",
+    "suggested_training_drill": "6v6 + 3 Neutral Rondo focusing on rapid vertical progression and playing through lines of pressure."
+  },
+  {
+    "timestamp_interval": "04:06 - 04:45",
+    "phase_of_play": "Attacking Progression",
+    "possession_team": "Barcelona",
+    "pitch_zone": "Final Third - Wide Channel",
+    "event_type": "Cross",
+    "tactical_description": "Barcelona shifts the focus to the wide channels, utilizing Balde (3) and Kounde to provide width. They attempt to penetrate the penalty area with a low cross following a series of drives and lateral shifts. The Betis defense maintains a tight 4-4-2 shape, successfully tackling and clearing the ball to prevent a direct shot on target.",
+    "success_rating": 6,
+    "key_tactical_insight": "Over-reliance on wide crosses against a numerically superior box presence reduces efficiency.",
+    "coach_actionable_advice": "Instruct wide players to use 'cut-backs' to the edge of the box rather than aerial crosses to exploit the space vacated by the retreating defensive line.",
+    "suggested_training_drill": "3v2 Wide Overlap and Cross: emphasizing cut-back delivery zones and late runs into the box."
+  },
+  {
+    "timestamp_interval": "07:43 - 08:39",
+    "phase_of_play": "Defensive Transition",
+    "possession_team": "Real Betis",
+    "pitch_zone": "Defensive Third - Wide",
+    "event_type": "Goal",
+    "tactical_description": "Real Betis exploits a defensive lapse during a Barcelona transition. Antony (7) receives the ball in a pocket of space as the Barcelona backline is disorganized. Kounde is caught out of position, failing to track the diagonal run. A quick shot results in a goal, highlighting a failure in Barcelona's rest-defense structure.",
+    "success_rating": 2,
+    "key_tactical_insight": "Inadequate cover in the 'rest-defense' phase allows the opponent to exploit half-spaces during turnovers.",
+    "coach_actionable_advice": "Fix the positioning of the full-back opposite to the attack; they must tuck in to form a back three during possession to provide better cover against counter-attacks.",
+    "suggested_training_drill": "Shadow Play for Rest-Defense: 8v5 possession game where the defensive team must reorganize into a 3-2 structure immediately upon loss of ball."
+  },
+  {
+    "timestamp_interval": "11:28 - 11:40",
+    "phase_of_play": "Offensive Set-Piece",
+    "possession_team": "Barcelona",
+    "pitch_zone": "Final Third - Box",
+    "event_type": "Shot",
+    "tactical_description": "Barcelona delivers a high corner into the six-yard box. The initial header is contested, and the second ball falls to Marcus Rashford (14). He attempts a snap-shot which is blocked/saved. The phase ends with a Betis clearance, but demonstrates Barcelona's threat on the second phase of set-pieces.",
+    "success_rating": 6,
+    "key_tactical_insight": "Winning the 'second ball' inside the box is as critical as the initial delivery in dead-ball situations.",
+    "coach_actionable_advice": "Assign specific 'zonal crashers' whose sole responsibility is to attack the anticipated drop zone of the second ball rather than the primary delivery point.",
+    "suggested_training_drill": "Set-Piece Scramble: Repeat corner deliveries where strikers must score within two touches after the initial defensive header."
+  }
+]

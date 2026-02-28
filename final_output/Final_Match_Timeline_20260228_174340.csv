@@ -1,0 +1,283 @@
+﻿timestamp,frame,label,confidence,Event_Type
+00:16,416,OUT,0.35,Ball Action
+01:00,1524,Throw-in,0.93,Match Event
+01:01,1540,PASS,0.96,Ball Action
+01:03,1582,DRIVE,0.93,Ball Action
+01:06,1670,HIGH PASS,0.92,Ball Action
+01:09,1740,Ball out of play,0.77,Match Event
+01:17,1932,Throw-in,0.79,Match Event
+01:18,1964,PASS,0.35,Ball Action
+01:23,2088,PASS,0.39,Ball Action
+01:25,2132,SHOT,0.36,Ball Action
+01:25,2148,Goal,0.32,Match Event
+01:28,2222,BALL PLAYER BLOCK,0.32,Ball Action
+01:29,2238,OUT,0.6,Ball Action
+01:37,2440,HIGH PASS,0.43,Ball Action
+01:38,2472,PASS,0.54,Ball Action
+01:40,2520,DRIVE,0.65,Ball Action
+01:42,2566,PASS,0.68,Ball Action
+01:45,2628,Throw-in,0.6,Match Event
+01:49,2738,PASS,0.36,Ball Action
+01:54,2858,PASS,0.41,Ball Action
+01:57,2948,PASS,0.31,Ball Action
+02:04,3122,DRIVE,0.3,Ball Action
+02:07,3184,PASS,0.59,Ball Action
+02:09,3242,DRIVE,0.65,Ball Action
+02:10,3272,PASS,0.32,Ball Action
+02:19,3486,PASS,0.57,Ball Action
+02:21,3540,Foul,0.34,Match Event
+02:25,3636,Yellow card,0.47,Match Event
+02:38,3972,Yellow card,0.39,Match Event
+02:45,4146,PASS,0.33,Ball Action
+02:53,4332,DRIVE,0.7,Ball Action
+02:54,4350,PASS,0.73,Ball Action
+02:59,4488,Goal,0.54,Match Event
+02:59,4496,SHOT,0.97,Ball Action
+03:00,4512,BALL PLAYER BLOCK,0.47,Ball Action
+03:00,4524,GOAL,0.69,Ball Action
+03:02,4552,OUT,0.33,Ball Action
+03:28,5214,PASS,0.67,Ball Action
+03:30,5254,SHOT,0.61,Ball Action
+03:30,5268,BALL PLAYER BLOCK,0.44,Ball Action
+03:42,5558,THROW IN,0.33,Ball Action
+03:51,5796,Kick-off,0.43,Match Event
+03:55,5880,Kick-off,0.38,Match Event
+03:56,5906,THROW IN,0.61,Ball Action
+03:58,5958,PASS,0.37,Ball Action
+04:04,6112,SHOT,0.41,Ball Action
+04:06,6168,Ball out of play,0.71,Match Event
+04:08,6220,OUT,0.63,Ball Action
+04:13,6336,Throw-in,0.73,Match Event
+04:14,6356,THROW IN,0.55,Ball Action
+04:14,6370,CROSS,0.65,Ball Action
+04:16,6408,Shots on target,0.59,Match Event
+04:17,6426,SHOT,0.73,Ball Action
+04:18,6456,GOAL,0.87,Ball Action
+04:18,6468,Goal,0.7,Match Event
+04:38,6954,THROW IN,0.95,Ball Action
+04:40,7010,HEADER,0.91,Ball Action
+04:41,7038,SHOT,0.3,Ball Action
+04:43,7080,Kick-off,0.44,Match Event
+04:46,7170,HIGH PASS,0.42,Ball Action
+04:48,7224,OUT,0.34,Ball Action
+05:01,7548,Corner,0.45,Match Event
+05:03,7592,CROSS,0.36,Ball Action
+05:03,7594,FREE KICK,0.9,Ball Action
+05:04,7624,SHOT,0.81,Ball Action
+05:05,7628,BALL PLAYER BLOCK,0.33,Ball Action
+05:05,7644,GOAL,0.61,Ball Action
+05:09,7740,Clearance,0.42,Match Event
+05:12,7824,Clearance,0.46,Match Event
+05:15,7884,HIGH PASS,0.57,Ball Action
+05:18,7970,PASS,0.64,Ball Action
+05:20,8000,DRIVE,0.45,Ball Action
+05:28,8202,SHOT,0.54,Ball Action
+05:28,8216,BALL PLAYER BLOCK,0.36,Ball Action
+05:28,8220,Ball out of play,0.43,Match Event
+05:29,8226,GOAL,0.57,Ball Action
+05:30,8256,OUT,0.31,Ball Action
+05:34,8360,OUT,0.36,Ball Action
+05:53,8848,PASS,0.82,Ball Action
+05:54,8868,DRIVE,0.73,Ball Action
+06:20,9504,Kick-off,0.42,Match Event
+06:22,9552,HIGH PASS,0.67,Ball Action
+06:27,9686,DRIVE,0.37,Ball Action
+06:31,9792,Foul,0.6,Match Event
+06:48,10212,Clearance,0.35,Match Event
+06:50,10274,HIGH PASS,0.48,Ball Action
+06:52,10316,PASS,0.32,Ball Action
+06:56,10422,THROW IN,0.45,Ball Action
+06:59,10488,Shots on target,0.62,Match Event
+07:00,10506,SHOT,0.95,Ball Action
+07:01,10530,DRIVE,0.32,Ball Action
+07:01,10536,Ball out of play,0.34,Match Event
+07:01,10544,GOAL,0.48,Ball Action
+07:06,10664,SHOT,0.48,Ball Action
+07:12,10800,PASS,0.54,Ball Action
+07:12,10818,DRIVE,0.72,Ball Action
+07:15,10878,SHOT,0.95,Ball Action
+07:16,10900,DRIVE,0.42,Ball Action
+07:16,10910,GOAL,0.88,Ball Action
+07:26,11150,PASS,0.87,Ball Action
+07:26,11172,DRIVE,0.42,Ball Action
+07:32,11316,DRIVE,0.69,Ball Action
+07:34,11350,SHOT,0.94,Ball Action
+07:34,11352,Goal,0.8,Match Event
+07:34,11362,BALL PLAYER BLOCK,0.68,Ball Action
+07:35,11378,GOAL,0.72,Ball Action
+07:59,11978,DRIVE,0.4,Ball Action
+08:01,12040,PASS,0.41,Ball Action
+08:02,12060,DRIVE,0.69,Ball Action
+08:06,12160,DRIVE,0.44,Ball Action
+08:08,12222,PASS,0.32,Ball Action
+08:15,12388,HIGH PASS,0.31,Ball Action
+08:23,12576,Kick-off,0.34,Match Event
+08:31,12792,Kick-off,0.44,Match Event
+08:38,12964,THROW IN,0.33,Ball Action
+08:39,12998,DRIVE,0.37,Ball Action
+08:41,13048,PASS,0.38,Ball Action
+08:42,13052,PLAYER SUCCESSFUL TACKLE,0.5,Ball Action
+08:43,13088,DRIVE,0.34,Ball Action
+08:45,13138,PASS,0.37,Ball Action
+08:49,13244,SHOT,0.86,Ball Action
+08:50,13256,BALL PLAYER BLOCK,0.57,Ball Action
+08:50,13272,GOAL,0.4,Ball Action
+08:51,13284,OUT,0.71,Ball Action
+08:59,13488,Throw-in,0.78,Match Event
+09:00,13510,THROW IN,0.83,Ball Action
+09:05,13630,SHOT,0.95,Ball Action
+09:05,13640,GOAL,0.37,Ball Action
+09:05,13646,BALL PLAYER BLOCK,0.91,Ball Action
+09:06,13656,Goal,0.47,Match Event
+09:27,14178,THROW IN,0.96,Ball Action
+09:29,14238,HEADER,0.8,Ball Action
+09:51,14784,Kick-off,0.41,Match Event
+09:55,14880,Kick-off,0.4,Match Event
+09:57,14938,THROW IN,0.44,Ball Action
+10:02,15058,DRIVE,0.6,Ball Action
+10:06,15164,PASS,0.58,Ball Action
+10:09,15228,Ball out of play,0.39,Match Event
+10:39,15984,Throw-in,0.45,Match Event
+10:41,16030,PASS,0.83,Ball Action
+10:42,16070,DRIVE,0.9,Ball Action
+10:50,16250,PASS,0.93,Ball Action
+10:51,16286,DRIVE,0.84,Ball Action
+10:59,16486,OUT,0.3,Ball Action
+10:59,16498,PASS,0.73,Ball Action
+11:00,16514,DRIVE,0.45,Ball Action
+11:03,16580,PASS,0.5,Ball Action
+11:05,16640,DRIVE,0.35,Ball Action
+11:10,16768,DRIVE,0.39,Ball Action
+11:11,16776,Shots on target,0.33,Match Event
+11:12,16810,SHOT,0.97,Ball Action
+11:13,16838,BALL PLAYER BLOCK,0.56,Ball Action
+11:13,16848,Goal,0.84,Match Event
+11:14,16854,GOAL,0.48,Ball Action
+11:40,17516,HIGH PASS,0.35,Ball Action
+11:41,17530,PASS,0.37,Ball Action
+11:42,17570,DRIVE,0.9,Ball Action
+11:47,17680,PASS,0.82,Ball Action
+11:48,17708,DRIVE,0.44,Ball Action
+11:50,17762,HIGH PASS,0.34,Ball Action
+11:58,17974,HIGH PASS,0.47,Ball Action
+12:13,18336,Kick-off,0.76,Match Event
+12:16,18404,THROW IN,0.67,Ball Action
+12:16,18408,Substitution,0.87,Match Event
+12:18,18456,OUT,0.46,Ball Action
+12:19,18486,PASS,0.46,Ball Action
+12:26,18650,SHOT,0.46,Ball Action
+12:32,18812,OUT,0.51,Ball Action
+12:45,19140,Substitution,0.39,Match Event
+12:55,19380,Clearance,0.96,Match Event
+12:56,19400,HIGH PASS,0.98,Ball Action
+13:05,19644,Shots on target,0.33,Match Event
+13:07,19690,SHOT,0.88,Ball Action
+13:07,19698,BALL PLAYER BLOCK,0.3,Ball Action
+13:08,19714,GOAL,0.89,Ball Action
+13:09,19740,Goal,0.52,Match Event
+13:37,20430,PASS,0.5,Ball Action
+13:41,20538,PASS,0.89,Ball Action
+13:42,20560,DRIVE,0.62,Ball Action
+13:43,20590,SHOT,0.87,Ball Action
+13:44,20604,BALL PLAYER BLOCK,0.44,Ball Action
+13:48,20700,Kick-off,0.32,Match Event
+13:51,20784,Kick-off,0.31,Match Event
+13:55,20888,HIGH PASS,0.48,Ball Action
+13:56,20904,Kick-off,0.34,Match Event
+14:02,21072,Throw-in,0.31,Match Event
+14:05,21148,PASS,0.71,Ball Action
+14:07,21178,DRIVE,0.37,Ball Action
+14:10,21256,PASS,0.78,Ball Action
+14:16,21404,SHOT,0.52,Ball Action
+14:16,21410,BALL PLAYER BLOCK,0.34,Ball Action
+14:17,21428,GOAL,0.88,Ball Action
+14:17,21446,OUT,0.33,Ball Action
+14:26,21674,HIGH PASS,0.66,Ball Action
+14:40,22006,PASS,0.49,Ball Action
+14:41,22034,DRIVE,0.36,Ball Action
+14:44,22120,DRIVE,0.38,Ball Action
+14:50,22254,OUT,0.39,Ball Action
+14:54,22354,PASS,0.75,Ball Action
+15:02,22572,Shots on target,0.49,Match Event
+15:03,22578,SHOT,0.92,Ball Action
+15:03,22596,Goal,0.35,Match Event
+15:03,22596,DRIVE,0.47,Ball Action
+15:10,22750,PASS,0.48,Ball Action
+15:19,22988,SHOT,0.87,Ball Action
+15:19,22996,GOAL,0.41,Ball Action
+15:47,23676,Substitution,0.58,Match Event
+16:01,24048,HIGH PASS,0.71,Ball Action
+16:02,24072,Throw-in,0.6,Match Event
+16:07,24184,PASS,0.46,Ball Action
+16:10,24266,SHOT,0.97,Ball Action
+16:11,24280,BALL PLAYER BLOCK,0.42,Ball Action
+16:12,24306,OUT,0.7,Ball Action
+16:12,24312,Ball out of play,0.6,Match Event
+16:20,24516,Clearance,0.47,Match Event
+16:22,24568,THROW IN,0.38,Ball Action
+16:33,24828,PASS,0.6,Ball Action
+16:34,24860,DRIVE,0.37,Ball Action
+16:35,24894,CROSS,0.42,Ball Action
+16:37,24926,SHOT,0.72,Ball Action
+16:37,24948,Goal,0.87,Match Event
+16:38,24962,GOAL,0.76,Ball Action
+16:54,25364,THROW IN,0.7,Ball Action
+16:55,25398,DRIVE,0.77,Ball Action
+16:58,25454,PASS,0.41,Ball Action
+16:58,25458,HIGH PASS,0.49,Ball Action
+17:26,26156,CROSS,0.59,Ball Action
+17:28,26200,DRIVE,0.33,Ball Action
+17:31,26288,OUT,0.38,Ball Action
+17:48,26710,THROW IN,0.61,Ball Action
+17:50,26764,PASS,0.74,Ball Action
+17:55,26890,SHOT,0.81,Ball Action
+17:56,26908,BALL PLAYER BLOCK,0.6,Ball Action
+17:57,26928,Ball out of play,0.86,Match Event
+17:57,26940,OUT,0.73,Ball Action
+18:09,27228,Corner,0.87,Match Event
+18:10,27250,THROW IN,0.78,Ball Action
+18:12,27320,PASS,0.5,Ball Action
+18:16,27408,DRIVE,0.34,Ball Action
+18:17,27432,SHOT,0.88,Ball Action
+18:17,27444,Shots on target,0.31,Match Event
+18:17,27446,BALL PLAYER BLOCK,0.48,Ball Action
+18:20,27508,PASS,0.43,Ball Action
+18:23,27580,DRIVE,0.46,Ball Action
+18:24,27610,PASS,0.35,Ball Action
+18:27,27684,Clearance,0.35,Match Event
+18:30,27758,DRIVE,0.39,Ball Action
+18:33,27834,SHOT,0.67,Ball Action
+18:45,28140,Ball out of play,0.46,Match Event
+18:55,28392,Throw-in,0.66,Match Event
+18:56,28420,THROW IN,0.88,Ball Action
+19:02,28568,SHOT,0.84,Ball Action
+19:03,28598,DRIVE,0.54,Ball Action
+19:09,28742,DRIVE,0.65,Ball Action
+19:10,28774,PASS,0.82,Ball Action
+19:17,28938,THROW IN,0.59,Ball Action
+19:18,28954,DRIVE,0.34,Ball Action
+19:21,29028,Throw-in,0.33,Match Event
+19:21,29036,PASS,0.39,Ball Action
+19:22,29066,BALL PLAYER BLOCK,0.4,Ball Action
+19:24,29124,OUT,0.4,Ball Action
+19:28,29206,THROW IN,0.38,Ball Action
+19:29,29238,PASS,0.38,Ball Action
+19:37,29436,Yellow card,0.64,Match Event
+19:40,29506,PASS,0.31,Ball Action
+19:46,29664,Direct free-kick,0.33,Match Event
+19:47,29686,FREE KICK,0.96,Ball Action
+19:47,29692,CROSS,0.44,Ball Action
+19:49,29728,SHOT,0.7,Ball Action
+19:49,29740,BALL PLAYER BLOCK,0.55,Ball Action
+19:49,29748,Ball out of play,0.7,Match Event
+19:50,29752,OUT,0.43,Ball Action
+19:55,29896,FREE KICK,0.73,Ball Action
+19:56,29900,CROSS,0.33,Ball Action
+19:56,29916,Throw-in,0.36,Match Event
+19:58,29950,DRIVE,0.68,Ball Action
+20:00,30016,SHOT,0.81,Ball Action
+20:03,30096,HEADER,0.36,Ball Action
+20:15,30394,DRIVE,0.34,Ball Action
+20:15,30396,Ball out of play,0.66,Match Event
+20:45,31128,Substitution,0.56,Match Event
+20:51,31282,HIGH PASS,0.31,Ball Action

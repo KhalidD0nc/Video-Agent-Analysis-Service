@@ -10,10 +10,10 @@ __pycache__/
 *$py.class
 
 # 3. Deep Learning Checkpoints & Weights (Too heavy for Git)
-checkpoints/
-*.pt
-*.pth
-*.weights
+#checkpoints/
+#*.pt
+#*.pth
+#*.weights
 
 # 4. Video Files (Ignore all match clips)
 *.mp4
@@ -22,9 +22,9 @@ checkpoints/
 *.mov
 
 # 5. Pipeline Output Directories (Generated data shouldn't be tracked)
-inference_output/
-results_in_csv/
-final_output/
+#inference_output/
+#results_in_csv/
+#final_output/
 
 # 6. IDEs and OS Hidden Files
 .vscode/

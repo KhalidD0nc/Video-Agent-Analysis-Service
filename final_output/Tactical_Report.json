@@ -1,0 +1,52 @@
+[
+  {
+    "timestamp_interval": "02:20 - 03:11",
+    "phase_of_play": "Build-up",
+    "possession_team": "Barcelona",
+    "pitch_zone": "Defensive Third - Central",
+    "event_type": "Vertical Pass",
+    "tactical_description": "Barcelona initiates play from the back with a high pass at 02:20 to bypass the initial Betis press. They maintain structural width with the fullbacks high, allowing the center-backs to find vertical passing lanes into the midfield. Pedri and Gavi drop deep to create overloads against Betis' front line. The sequence involves multiple short passes and lateral drives to shift the defensive block until a foul occurs at 03:11, halting progression.",
+    "success_rating": 7,
+    "key_tactical_insight": "Using deep-lying playmakers to drop into the defensive line creates a 3-v-2 numerical advantage, facilitating clean exits from the first phase."
+  },
+  {
+    "timestamp_interval": "04:01 - 04:45",
+    "phase_of_play": "Final Third Entry",
+    "possession_team": "Barcelona",
+    "pitch_zone": "Wide Channel - Left",
+    "event_type": "Cross",
+    "tactical_description": "Following a clearance at 04:01, Barcelona recovers possession and rapidly transitions into the attacking third. Balde provides extreme width on the left flank, forcing the Betis right-back to isolate. A sequence of quick interplay (04:11 - 04:18) creates an opening for a cross at 04:34. The defensive reaction from Betis is reactive rather than proactive, relying on a successful tackle at 04:45 to prevent a clear shooting opportunity.",
+    "success_rating": 8,
+    "key_tactical_insight": "Exploiting the overlap on the left wing forces the defensive line to stretch horizontally, opening gaps between the fullback and the nearest center-back."
+  },
+  {
+    "timestamp_interval": "07:43 - 08:15",
+    "phase_of_play": "Counter-Attack",
+    "possession_team": "Real Betis",
+    "pitch_zone": "Zone 14",
+    "event_type": "Goal",
+    "tactical_description": "Betis capitalizes on a Barcelona turnover in the middle third. They exploit the vacated space behind Barcelona's high defensive line. A direct pass at 07:43 finds Antony in a central position. Barcelona's center-backs are caught in a retreating posture, failing to close down the space. Antony executes a clinical shot at 07:45, benefiting from a deflection (block) that wrong-foots the goalkeeper. The speed of the transition leaves the opposition defense disorganized.",
+    "success_rating": 10,
+    "key_tactical_insight": "Verticality in transition is rewarded when the opposition's rest-defense fails to maintain adequate cover against central runners."
+  },
+  {
+    "timestamp_interval": "11:28 - 11:40",
+    "phase_of_play": "Set Piece",
+    "possession_team": "Barcelona",
+    "pitch_zone": "Penalty Box",
+    "event_type": "Header",
+    "tactical_description": "Barcelona earns a corner at 11:28. The cross at 11:29 targets the near post to capitalize on the aerially strong center-backs. Betis employs a mixed marking scheme (zonal and man-to-man). Barcelona creates chaos with a screen movement, allowing a shot at 11:33. The clearance at 11:40 by Betis defense signifies effective post-event organization to prevent a second-phase goal.",
+    "success_rating": 6,
+    "key_tactical_insight": "Near-post flick-on attempts are highly effective against zonal marking systems that fail to prioritize the front-zone space."
+  },
+  {
+    "timestamp_interval": "12:00 - 12:42",
+    "phase_of_play": "Progression",
+    "possession_team": "Barcelona",
+    "pitch_zone": "Middle Third - Central",
+    "event_type": "Line-Breaking Pass",
+    "tactical_description": "In the final analyzed phase, Barcelona attempts to break Betis' mid-block through central combinations. The use of a double-pivot allows one midfielder to stay deep while the other pushes between the lines. Despite accurate passing (12:23 - 12:37), the spatial density maintained by Betis in the central channel is high. The phase ends with a successful defensive tackle at 12:40, showcasing Betis' discipline in maintaining a compact shape.",
+    "success_rating": 5,
+    "key_tactical_insight": "Central compactness can neutralize superior technical passing if the defensive unit maintains short distances between the midfield and defensive lines."
+  }
+]

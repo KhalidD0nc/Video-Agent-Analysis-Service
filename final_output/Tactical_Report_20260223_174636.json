@@ -1,0 +1,58 @@
+[
+  {
+    "start_timestamp": "02:20",
+    "end_timestamp": "03:11",
+    "phase_of_play": "Build-up",
+    "possession_team": "FC Barcelona",
+    "pitch_zone": "Middle Third - Central",
+    "event_type": "Line-Breaking Pass",
+    "tactical_description": "Barcelona attempts to build from the back using a 3-2-5 structure, with the pivots dropping deep to draw out the Real Betis mid-block. Betis maintains a compact 4-4-2 defensive shape, focusing on closing the central passing lanes and forcing Barcelona into wide areas. Barcelona's center-backs look for vertical options but are met with disciplined horizontal shifting from the Betis midfield line.",
+    "attacking_team_execution_rating": 7,
+    "defending_team_execution_rating": 8,
+    "key_tactical_insight": "A compact mid-block effectively nullifies central progression when defensive spacing is maintained below 10-12 meters between lines.",
+    "coach_actionable_advice": "Encourage double-pivots to alternate heights to create diagonal passing lanes and unbalance the opposition's first line of pressure.",
+    "suggested_training_drill": "8v8 + 2 Neutral Players: Breaking the Mid-Block"
+  },
+  {
+    "start_timestamp": "04:18",
+    "end_timestamp": "05:03",
+    "phase_of_play": "Attacking Third Entry",
+    "possession_team": "FC Barcelona",
+    "pitch_zone": "Final Third - Right Channel",
+    "event_type": "Probing Pass",
+    "tactical_description": "Barcelona shifts the ball to the right flank, attempting to utilize Lamine Yamal's positioning in the half-space to drag the Betis left-back out of position. Real Betis responds by dropping into a low-block, with the wingers tracking back to provide double-coverage on the wings. Barcelona's circulation is too slow to bypass the organized defensive layers.",
+    "attacking_team_execution_rating": 6,
+    "defending_team_execution_rating": 7,
+    "key_tactical_insight": "Static wide possession allows the defense to regroup and establish numerical superiority in the box.",
+    "coach_actionable_advice": "Implement third-man runs from the opposite half-space to exploit the focus of the defensive line on the ball-side.",
+    "suggested_training_drill": "Final Third Overloads: 3v2 on the Flank"
+  },
+  {
+    "start_timestamp": "07:31",
+    "end_timestamp": "07:46",
+    "phase_of_play": "Offensive Transition",
+    "possession_team": "Real Betis",
+    "pitch_zone": "Final Third - Right Wing",
+    "event_type": "Goal",
+    "tactical_description": "Real Betis capitalizes on a Barcelona turnover in the middle third. They quickly transition wide to the right. As the cross is delivered, Antony (7) makes a ghosting run from the blind side of the Barcelona left-back. Barcelona's center-backs are preoccupied with the central striker, leaving the far post completely exposed for the finish.",
+    "attacking_team_execution_rating": 9,
+    "defending_team_execution_rating": 4,
+    "key_tactical_insight": "Defensive transition failures often stem from a lack of weak-side tracking during rapid vertical attacks.",
+    "coach_actionable_advice": "Full-backs must maintain a 'see-ball, see-man' body orientation when the opposition enters the final third from the opposite wing.",
+    "suggested_training_drill": "Defending Crosses: Weak-Side Tracking"
+  },
+  {
+    "start_timestamp": "11:17",
+    "end_timestamp": "11:40",
+    "phase_of_play": "Set Piece",
+    "possession_team": "FC Barcelona",
+    "pitch_zone": "Penalty Area",
+    "event_type": "Corner",
+    "tactical_description": "Barcelona executes an inswinging corner targeting the edge of the six-yard box. They attempt to block the Betis goalkeeper's path using two attackers. Betis employs a zonal-dominant marking system with three players in the 'high-traffic' zone, successfully clearing the first ball out of the danger area.",
+    "attacking_team_execution_rating": 6,
+    "defending_team_execution_rating": 8,
+    "key_tactical_insight": "Zonal marking in the six-yard box is superior for clearing direct deliveries when the defenders have height advantages.",
+    "coach_actionable_advice": "Utilize 'short' corner variations to pull zonal defenders out of their designated blocks before delivering into the box.",
+    "suggested_training_drill": "Attacking and Defending Set Pieces: Zonal vs Man-Marking"
+  }
+]
