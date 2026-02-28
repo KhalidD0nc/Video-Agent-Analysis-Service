@@ -1,0 +1,33 @@
+# 1. Environment Variables (CRITICAL SECURITY)
+.env
+
+# 2. Python Virtual Environments & Caches
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 3. Deep Learning Checkpoints & Weights (Too heavy for Git)
+checkpoints/
+*.pt
+*.pth
+*.weights
+
+# 4. Video Files (Ignore all match clips)
+*.mp4
+*.avi
+*.mkv
+*.mov
+
+# 5. Pipeline Output Directories (Generated data shouldn't be tracked)
+inference_output/
+results_in_csv/
+final_output/
+
+# 6. IDEs and OS Hidden Files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

@@ -117,10 +117,17 @@ def main(args):
         stride = stride, dataset = args.dataset, size = (args.frame_width, args.frame_height)
     )
 
+    # ========================================================
+    # THE HACK: Hardcoded Memory Management for RTX 3060 (Windows)
+    # ========================================================
     inference_loader = DataLoader(
-        inference_dataset, batch_size = args.batch_size,
-        shuffle = False, num_workers = args.num_workers,
-        pin_memory = True, drop_last = False)
+        inference_dataset, 
+        batch_size = 1,       # إجبار الموديل على فريم واحد لتفادي OOM
+        shuffle = False, 
+        num_workers = 0,      # إجبار الويندوز على مسار واحد لمنع تكرار النسخ
+        pin_memory = True, 
+        drop_last = False
+    )
 
     inference(model, inference_loader, classes, threshold = args.inference_threshold)
     
