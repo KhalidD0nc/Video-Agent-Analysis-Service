@@ -82,10 +82,22 @@ def update_args(args, config):
 
 
 def main(args):
+    # === 1. Hardware Sensing (Device Agnostic) ===
+    if torch.cuda.is_available():
+        device = torch.device("cuda")
+    elif torch.backends.mps.is_available():
+        device = torch.device("mps")
+    else:
+        device = torch.device("cpu")
+        
+    print(f"\n⚙️ Hardware Initialization: Running inference on [{device.type.upper()}]\n")
 
     config_path = args.model.split('_')[0] + '/' + args.model + '.json'
     config = load_json(os.path.join('config', config_path))
     args = update_args(args, config)
+    
+    # Inject device into args for internal model routing
+    args.device = device
 
     # Get datasets train, validation (and validation for map -> Video dataset)
     classes = load_classes(os.path.join('data', args.dataset, 'class.txt'))
@@ -103,8 +115,11 @@ def main(args):
         model._num_classes = np.array(n_classes).sum() 
 
     print('START INFERENCE')
-    model.load(torch.load(os.path.join(
-        os.getcwd(), 'checkpoints', args.model.split('_')[0], args.model, 'checkpoint_best.pt')))
+    
+    # === 2. Dynamic Weight Mapping (map_location) ===
+    checkpoint_path = os.path.join(
+        os.getcwd(), 'checkpoints', args.model.split('_')[0], args.model, 'checkpoint_best.pt')
+    model.load(torch.load(checkpoint_path, map_location=device))
 
     stride = STRIDE
     if args.dataset == 'soccernet':
@@ -119,13 +134,14 @@ def main(args):
 
     # ========================================================
     # THE HACK: Hardcoded Memory Management for RTX 3060 (Windows)
+    # Modified to be completely safe for Mac/CPU cross-platform
     # ========================================================
     inference_loader = DataLoader(
         inference_dataset, 
         batch_size = 1,       # إجبار الموديل على فريم واحد لتفادي OOM
         shuffle = False, 
         num_workers = 0,      # إجبار الويندوز على مسار واحد لمنع تكرار النسخ
-        pin_memory = True, 
+        pin_memory = True if device.type == 'cuda' else False, # إيقافها في الماك
         drop_last = False
     )
 
