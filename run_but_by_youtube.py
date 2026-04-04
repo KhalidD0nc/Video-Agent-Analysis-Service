@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 import yt_dlp  # يجب تثبيتها عبر: pip install yt-dlp
 
 # --- YOUTUBE INPUT ---
-YOUTUBE_URL = "https://www.youtube.com/watch?v=90M-JObY9uU"  # ضع رابط يوتيوب هنا
+YOUTUBE_URL = "https://youtu.be/3oxlvdNMJB0?si=YMsiiLgpYr1mnZq5" 
 
 def download_youtube_video(url):
     print(f"\n📥 Downloading video from YouTube: {url}")

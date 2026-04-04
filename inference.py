@@ -11,7 +11,6 @@ import torch
 import numpy as np
 import random
 from torch.utils.data import DataLoader
-import wandb
 import sys
 
 
@@ -106,7 +105,7 @@ def main(args):
 
                 
     # Model
-    model = TDEEDModel(args=args)
+    model = TDEEDModel(device=device, args=args)
 
     #If pretrain -> 2 prediction heads
     if args.pretrain != None:
