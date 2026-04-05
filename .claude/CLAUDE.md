@@ -22,7 +22,7 @@ Goal: Extract a clean `src/coachai/` Python package so `modal_app.py` becomes a 
 - [x] 12. Create `coachai/analysis/timeline.py` (frame→timestamp, JSON→CSV)
 - [x] 13. Create `coachai/analysis/cleaner.py` (merge + dedup logic)
 - [x] 14. Create `coachai/reporting/gemini_client.py` (Gemini API wrapper)
-- [ ] 15. Create `coachai/pipeline.py` (single orchestrator)
+- [x] 15. Create `coachai/pipeline.py` (single orchestrator)
 - [ ] 16. Create `run_local.py` (thin CLI) + smoke test
 - [ ] 17. Rewrite `modal_app.py` as thin wrapper (~80 lines) ⚠️ production
 - [ ] 18. Delete `inference.py`, `run_pipeline.py`, `run_but_by_youtube.py`
