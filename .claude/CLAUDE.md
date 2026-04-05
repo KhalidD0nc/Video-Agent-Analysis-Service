@@ -16,7 +16,7 @@ Goal: Extract a clean `src/coachai/` Python package so `modal_app.py` becomes a 
 - [x] 6. Create `coachai/reporting/prompts.py` (extract inline prompt strings)
 - [x] 7. Create `coachai/inference/io.py` (consolidates `util/io.py` + `util/dataset.py`; originals kept until consumers migrate)
 - [x] 8. Create `coachai/ingestion/downloader.py` (video download logic)
-- [ ] 9. Create `coachai/inference/dataset.py` (3 inference classes from frame.py)
+- [x] 9. Create `coachai/inference/dataset.py` (ActionSpotInferenceDataset from frame.py)
 - [ ] 10. Create `coachai/inference/postprocess.py` (NMS + event extraction from eval.py)
 - [ ] 11. Create `coachai/inference/engine.py` (T-DEED wrapper)
 - [ ] 12. Create `coachai/analysis/timeline.py` (frame→timestamp, JSON→CSV)
