@@ -9,7 +9,7 @@ Goal: Extract a clean `src/coachai/` Python package so `modal_app.py` becomes a 
 
 - [ ] 0. Write this tracker to `.claude/CLAUDE.md`
 - [ ] 1. Create branch `refactor/coachai-package`
-- [ ] 2. Delete `model/impl/gsf.py` + `gsm.py` (dead code, confirmed unused)
+- [x] 2. ~~Delete `model/impl/gsf.py` + `gsm.py`~~ — SKIP: `model/shift.py` imports both files; they are live code
 - [ ] 3. Add `.env` to `.gitignore` + create `.env.example`
 - [ ] 4. Create `src/coachai/` skeleton + `pyproject.toml`
 - [ ] 5. Create `coachai/config.py` (all scattered constants)
