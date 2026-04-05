@@ -19,8 +19,8 @@ Goal: Extract a clean `src/coachai/` Python package so `modal_app.py` becomes a 
 - [x] 9. Create `coachai/inference/dataset.py` (ActionSpotInferenceDataset from frame.py)
 - [x] 10. Create `coachai/inference/postprocess.py` (NMS + event extraction from eval.py)
 - [x] 11. Create `coachai/inference/engine.py` (T-DEED wrapper)
-- [ ] 12. Create `coachai/analysis/timeline.py` (frame→timestamp, JSON→CSV)
-- [ ] 13. Create `coachai/analysis/cleaner.py` (merge + dedup logic)
+- [x] 12. Create `coachai/analysis/timeline.py` (frame→timestamp, JSON→CSV)
+- [x] 13. Create `coachai/analysis/cleaner.py` (merge + dedup logic)
 - [ ] 14. Create `coachai/reporting/gemini_client.py` (Gemini API wrapper)
 - [ ] 15. Create `coachai/pipeline.py` (single orchestrator)
 - [ ] 16. Create `run_local.py` (thin CLI) + smoke test
