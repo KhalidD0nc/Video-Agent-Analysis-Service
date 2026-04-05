@@ -13,7 +13,7 @@ Goal: Extract a clean `src/coachai/` Python package so `modal_app.py` becomes a 
 - [x] 3. Add `.env` to `.gitignore` + create `.env.example`
 - [x] 4. Create `src/coachai/` skeleton + `pyproject.toml`
 - [x] 5. Create `coachai/config.py` (all scattered constants)
-- [ ] 6. Create `coachai/reporting/prompts.py` (extract inline prompt strings)
+- [x] 6. Create `coachai/reporting/prompts.py` (extract inline prompt strings)
 - [ ] 7. Create `coachai/inference/io.py` → delete `util/io.py` + `util/dataset.py`
 - [ ] 8. Create `coachai/ingestion/downloader.py` (video download logic)
 - [ ] 9. Create `coachai/inference/dataset.py` (3 inference classes from frame.py)
