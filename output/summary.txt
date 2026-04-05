@@ -1,0 +1,59 @@
+COACHAI MATCH SUMMARY
+==================================================
+Video : downloaded_match_clip.mp4
+Time  : 160.9s pipeline
+
+MATCH STATS
+──────────────────────────────────────────────────
+Total Events   : 93
+Goals          : 3
+Shots          : 13
+──────────────────────────────────────────────────
+
+GOALS
+  ⚽  01:07  (conf: 0.37)
+  ⚽  01:47  (conf: 0.77)
+  ⚽  04:11  (conf: 0.64)
+
+SHOTS ON GOAL
+  🥅  00:46  (conf: 0.68)
+  🥅  01:06  (conf: 0.95)
+  🥅  01:36  (conf: 0.95)
+  🥅  01:46  (conf: 0.93)
+  🥅  02:02  (conf: 0.33)
+  🥅  02:06  (conf: 0.98)
+  🥅  02:18  (conf: 0.45)
+  🥅  02:33  (conf: 0.87)
+  🥅  02:50  (conf: 0.69)
+  🥅  03:17  (conf: 0.76)
+  🥅  03:56  (conf: 0.62)
+  🥅  04:09  (conf: 0.96)
+  🥅  04:23  (conf: 0.99)
+
+TACTICAL PHASES SUMMARY
+──────────────────────────────────────────────────
+
+[1] 00:44→01:07  ATTACKING TRANSITION
+    Attack 8/10  |  Defense 4/10
+    Insight : Late arrivals into the penalty area are often untracked when the defensive block is preoccupied with the flight of a wide delivery.
+    Drill   : Crossing and Finishing under Pressure: 4v3 in the box with rotating wide deliveries.
+
+[2] 01:30→01:48  SUSTAINED PRESSURE
+    Attack 9/10  |  Defense 3/10
+    Insight : The efficiency of the counter-press immediately following a blocked shot is the primary catalyst for this goal.
+    Drill   : Rondo Transition: 5v2 transitioning into a 5v5 goal-scoring game upon possession loss/gain.
+
+[3] 02:15→02:38  DIRECT BUILD-UP
+    Attack 7/10  |  Defense 5/10
+    Insight : Direct verticality can dismantle a high-pressing team if their defensive line fails to drop in anticipation of the long delivery.
+    Drill   : Vertical Penetration Games: 8v8 focusing on direct passes into target forwards with supporting runs.
+
+[4] 03:55→04:05  OFFENSIVE SET PIECE
+    Attack 8/10  |  Defense 4/10
+    Insight : Zonal marking systems are vulnerable to 'blocker' movements that prevent defenders from jumping or tracking runs.
+    Drill   : Set Piece Specialization: 6v6 Corner Defense focusing on aggressive man-to-man contact.
+
+[5] 04:09→04:11  OFFENSIVE SET PIECE
+    Attack 10/10  |  Defense 2/10
+    Insight : Wall structural integrity is paramount; a single inch of separation can be the difference between a block and a goal at the professional level.
+    Drill   : Set Piece Simulation: Direct free kick practice with defenders in a wall using mannequins and active players.

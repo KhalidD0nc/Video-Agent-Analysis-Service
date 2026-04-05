@@ -36,7 +36,11 @@ WEIGHTS_DIR = Path("/weights")
 # Container image with all dependencies baked in
 image = (
     modal.Image.debian_slim(python_version="3.11")
-    .apt_install("libgl1", "libglib2.0-0", "ffmpeg")
+    .apt_install("libgl1", "libglib2.0-0", "ffmpeg", "curl", "unzip")
+    .run_commands(
+        "curl -fsSL https://deno.land/install.sh | sh",
+        "mv /root/.deno/bin/deno /usr/local/bin/deno"
+    )
     .pip_install(
         # Core AI
         "torch==2.5.1",
@@ -59,24 +63,27 @@ image = (
         "google-genai==1.64.0",
         "yt-dlp==2026.2.21",
         "python-dotenv==1.2.1",
+        # Web endpoints (required explicitly in Modal v1)
+        "fastapi[standard]",
     )
-    # Bake source code INTO the image (not Mount) for production stability
-    .copy_local_dir(
-        os.path.join(os.path.dirname(__file__), "model"),
-        remote_path="/root/app/model",
-    )
-    .copy_local_dir(
-        os.path.join(os.path.dirname(__file__), "dataset"),
-        remote_path="/root/app/dataset",
-    )
-    .copy_local_dir(
-        os.path.join(os.path.dirname(__file__), "util"),
-        remote_path="/root/app/util",
-    )
+    # All build steps MUST come before add_local_dir() in Modal v1
     .env({
         "WANDB_MODE": "offline",
         "PYTORCH_CUDA_ALLOC_CONF": "expandable_segments:True",
     })
+    # Bake source code INTO the image last (Modal v1 rule: add_local_* must be last)
+    .add_local_dir(
+        os.path.join(os.path.dirname(__file__), "model"),
+        remote_path="/root/app/model",
+    )
+    .add_local_dir(
+        os.path.join(os.path.dirname(__file__), "dataset"),
+        remote_path="/root/app/dataset",
+    )
+    .add_local_dir(
+        os.path.join(os.path.dirname(__file__), "util"),
+        remote_path="/root/app/util",
+    )
 )
 
 # Models to run (same as run_pipeline.py)
@@ -218,9 +225,10 @@ class CoachAIService:
     @modal.method()
     def run_pipeline(
         self,
-        video_url: str,
+        video_url: str = "",
         inference_threshold: float = 0.3,
         skip_gemini: bool = False,
+        video_path: str = "",  # skip download — use a file already on the volume
     ) -> dict:
         """
         Execute the full 4-stage pipeline on a video.
@@ -235,13 +243,21 @@ class CoachAIService:
             "stages": {},
         }
 
-        # === STAGE 0: Download video ===
+        # === STAGE 0: Download video (skipped if video_path provided) ===
         stage_start = time.time()
-        video_path = self._download_video(video_url)
+        if video_path:
+            volume.reload()  # sync volume so files uploaded after container boot are visible
+            if not os.path.exists(video_path):
+                raise FileNotFoundError(f"video_path not found: {video_path}")
+            print(f"📂 Using existing file: {video_path}")
+        else:
+            if not video_url:
+                raise ValueError("Either video_url or video_path must be provided")
+            video_path = self._download_video(video_url)
         results["stages"]["download"] = {
             "duration_seconds": round(time.time() - stage_start, 1),
         }
-        print(f"📥 Video downloaded: {video_path}")
+        print(f"📥 Video ready: {video_path}")
 
         # === STAGE 1: Run both T-DEED models ===
         stage_start = time.time()
@@ -507,7 +523,7 @@ For each distinct tactical phase, generate an object with the following keys:
         try:
             print("🧠 Stage 3: Generating JSON tactical analysis...")
             response_json = client.models.generate_content(
-                model="gemini-2.5-flash-preview-04-17",
+                model="gemini-3-flash-preview",
                 contents=[video_file, json_prompt],
             )
             tactical_json = response_json.text
@@ -556,7 +572,7 @@ CRITICAL: Output ONLY the Markdown text. Do NOT wrap it in JSON. Be direct, auth
 """
             print("📝 Stage 4: Generating comprehensive text report...")
             response_text = client.models.generate_content(
-                model="gemini-2.5-flash-preview-04-17",
+                model="gemini-3-flash-preview",
                 contents=[video_file, text_prompt],
             )
             comprehensive_md = response_text.text
@@ -579,26 +595,63 @@ CRITICAL: Output ONLY the Markdown text. Do NOT wrap it in JSON. Be direct, auth
     # -------------------------------------------------------------------
 
     def _download_video(self, video_url: str) -> str:
-        """Download a video from YouTube URL to a temp file."""
+        """Download a video to a temp file. Supports direct MP4 URLs and YouTube."""
         import subprocess
 
         output_path = f"/tmp/video_{uuid.uuid4().hex[:8]}.mp4"
 
-        # Use yt-dlp to download
-        cmd = [
+        # Direct MP4 / non-YouTube URL: use curl, no yt-dlp needed
+        youtube_hosts = ("youtube.com", "youtu.be")
+        is_youtube = any(h in video_url for h in youtube_hosts)
+        if not is_youtube:
+            result = subprocess.run(
+                ["curl", "-L", "--max-filesize", "500M", "-o", output_path, video_url],
+                capture_output=True, text=True, timeout=120,
+            )
+            if result.returncode != 0:
+                raise RuntimeError(f"curl download failed: {result.stderr[:400]}")
+            if not os.path.exists(output_path):
+                raise FileNotFoundError(f"Download produced no file: {output_path}")
+            size_mb = os.path.getsize(output_path) / (1024 * 1024)
+            print(f"📥 Downloaded video via curl: {size_mb:.1f} MB")
+            return output_path
+
+        base_cmd = [
             "yt-dlp",
             "-f", "best[height<=720]",  # Cap at 720p to save bandwidth
             "-o", output_path,
             "--no-playlist",
             "--quiet",
-            video_url,
         ]
 
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
-        if result.returncode != 0:
-            raise RuntimeError(
-                f"yt-dlp failed: {result.stderr[:500]}"
-            )
+        # Build list of strategies to attempt in order.
+        # Strategy 1: cookies file path from YOUTUBE_COOKIES_PATH env var (most reliable).
+        #   To use: store your cookies.txt in a Modal Volume and set YOUTUBE_COOKIES_PATH.
+        # Strategy 2: TV embedded client (bypasses bot detection without cookies).
+        # Strategy 3: iOS client fallback.
+        cookies_path = os.environ.get("YOUTUBE_COOKIES_PATH", "")
+        strategies: list[list[str]] = []
+
+        if cookies_path and os.path.exists(cookies_path):
+            strategies.append(base_cmd + ["--cookies", cookies_path, video_url])
+
+        strategies += [
+            base_cmd + ["--extractor-args", "youtube:player_client=tv_embedded", video_url],
+            base_cmd + ["--extractor-args", "youtube:player_client=ios", video_url],
+            base_cmd + [video_url],  # last-resort: plain attempt
+        ]
+
+        last_error = ""
+        for cmd in strategies:
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+            if result.returncode == 0:
+                break
+            last_error = result.stderr[:600]
+            # Remove partial download before retrying
+            if os.path.exists(output_path):
+                os.remove(output_path)
+        else:
+            raise RuntimeError(f"yt-dlp failed after all strategies: {last_error}")
 
         if not os.path.exists(output_path):
             raise FileNotFoundError(f"Video download failed: {output_path}")
@@ -614,7 +667,7 @@ CRITICAL: Output ONLY the Markdown text. Do NOT wrap it in JSON. Be direct, auth
 # ---------------------------------------------------------------------------
 
 @app.function(image=image, timeout=30)
-@modal.web_endpoint(method="POST", docs=True)
+@modal.fastapi_endpoint(method="POST", docs=True)
 def submit(request: dict) -> dict:
     """
     Submit a video analysis job (async).
@@ -627,9 +680,10 @@ def submit(request: dict) -> dict:
         "skip_gemini": false           // optional
     }
     """
-    video_url = request.get("video_url")
-    if not video_url:
-        return {"status": "error", "message": "video_url is required"}
+    video_url = request.get("video_url", "")
+    video_path = request.get("video_path", "")  # optional: path to file on the volume
+    if not video_url and not video_path:
+        return {"status": "error", "message": "video_url or video_path is required"}
 
     inference_threshold = request.get("inference_threshold", 0.3)
     skip_gemini = request.get("skip_gemini", False)
@@ -640,6 +694,7 @@ def submit(request: dict) -> dict:
         video_url=video_url,
         inference_threshold=inference_threshold,
         skip_gemini=skip_gemini,
+        video_path=video_path,
     )
 
     return {
@@ -650,7 +705,7 @@ def submit(request: dict) -> dict:
 
 
 @app.function(image=image, timeout=30)
-@modal.web_endpoint(method="GET", docs=True)
+@modal.fastapi_endpoint(method="GET", docs=True)
 def status(job_id: str) -> dict:
     """
     Poll for the result of a submitted analysis job.
@@ -663,7 +718,7 @@ def status(job_id: str) -> dict:
         return {"status": "error", "message": "job_id query param is required"}
 
     try:
-        function_call = modal.functions.FunctionCall.from_id(job_id)
+        function_call = modal.FunctionCall.from_id(job_id)
         result = function_call.get(timeout=0)
         return {"status": "completed", "result": result}
     except TimeoutError:
@@ -689,7 +744,7 @@ def status(job_id: str) -> dict:
     secrets=[modal.Secret.from_name("gemini-api-key")],
     timeout=900,
 )
-@modal.web_endpoint(method="POST", docs=True)
+@modal.fastapi_endpoint(method="POST", docs=True)
 def analyze(request: dict) -> dict:
     """
     Synchronous analysis endpoint (for testing / short videos only).
@@ -719,7 +774,7 @@ def analyze(request: dict) -> dict:
 # ---------------------------------------------------------------------------
 
 @app.function(image=image, timeout=10)
-@modal.web_endpoint(method="GET", docs=True)
+@modal.fastapi_endpoint(method="GET", docs=True)
 def health() -> dict:
     """Health check endpoint."""
     return {

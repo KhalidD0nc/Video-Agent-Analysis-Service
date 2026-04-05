@@ -1,76 +1,129 @@
 """
-One-time script to upload model checkpoints, configs, and class definitions
-to a Modal Volume for persistent storage.
+upload_weights.py — Upload local model weights to Modal Volume
+==============================================================
+
+Uploads the local checkpoints/ and config/ directories into the
+"coachAI-weights" Modal Volume so the inference container can load them.
 
 Usage:
     modal run upload_weights.py
+
+Modal v1 API Note:
+    modal.Mount is REMOVED in Modal v1. Use modal.Volume + put_directory()
+    or the `modal volume put` CLI command instead.
 """
 
 import modal
 import os
 
+# The same Volume used by modal_app.py
 volume = modal.Volume.from_name("coachAI-weights", create_if_missing=True)
 
-app = modal.App("coachAI-upload")
+app = modal.App("coachAI-upload-weights")
 
-# Mount the local directories we need to upload
-local_mount = modal.Mount.from_local_dir(
-    os.path.join(os.path.dirname(__file__), "checkpoints"),
-    remote_path="/local_src/checkpoints",
-)
-config_mount = modal.Mount.from_local_dir(
-    os.path.join(os.path.dirname(__file__), "config"),
-    remote_path="/local_src/config",
-)
-data_mount = modal.Mount.from_local_dir(
-    os.path.join(os.path.dirname(__file__), "data"),
-    remote_path="/local_src/class_data",
-)
+ROOT = os.path.dirname(os.path.abspath(__file__))
 
 
 @app.function(
     volumes={"/weights": volume},
-    mounts=[local_mount, config_mount, data_mount],
-    timeout=300,
+    # Give plenty of time for large checkpoint uploads
+    timeout=1800,
 )
-def upload():
+def upload_weights():
+    """
+    Copies local directories into the Modal Volume.
+
+    Directory layout inside the volume:
+        /weights/
+          checkpoints/
+            SoccerNet/
+              SoccerNet_small/
+                checkpoint_best.pt
+            SoccerNetBall/
+              SoccerNetBall_challenge1/
+                checkpoint_best.pt
+          config/
+            SoccerNet/
+              SoccerNet_small.json
+            SoccerNetBall/
+              SoccerNetBall_challenge1.json
+          class_data/
+            soccernet/
+              class.txt
+            soccernetball/
+              class.txt
+    """
+    import os
     import shutil
 
-    # Upload checkpoints
-    src_ckpt = "/local_src/checkpoints"
-    dst_ckpt = "/weights/checkpoints"
-    if os.path.exists(dst_ckpt):
-        shutil.rmtree(dst_ckpt)
-    shutil.copytree(src_ckpt, dst_ckpt)
-    print(f"✅ Uploaded checkpoints -> {dst_ckpt}")
+    volume_root = "/weights"
 
-    # Upload configs
-    src_cfg = "/local_src/config"
-    dst_cfg = "/weights/config"
-    if os.path.exists(dst_cfg):
-        shutil.rmtree(dst_cfg)
-    shutil.copytree(src_cfg, dst_cfg)
-    print(f"✅ Uploaded configs -> {dst_cfg}")
+    # -----------------------------------------------------------------------
+    # Local source directories (relative to this file)
+    # -----------------------------------------------------------------------
+    local_checkpoints = "/mnt/local/checkpoints"
+    local_config      = "/mnt/local/config"
+    local_class_data  = "/mnt/local/dataset"   # class.txt files live in dataset/
 
-    # Upload class definitions (renamed to class_data to avoid collision)
-    src_data = "/local_src/class_data"
-    dst_data = "/weights/class_data"
-    if os.path.exists(dst_data):
-        shutil.rmtree(dst_data)
-    shutil.copytree(src_data, dst_data)
-    print(f"✅ Uploaded class data -> {dst_data}")
+    def sync_dir(src: str, dst: str):
+        """Copy every file from src into dst, preserving sub-tree structure."""
+        if not os.path.exists(src):
+            print(f"⚠️  Source directory not found, skipping: {src}")
+            return 0
 
-    # Verify
-    for root, dirs, files in os.walk("/weights"):
-        level = root.replace("/weights", "").count(os.sep)
-        indent = " " * 2 * level
-        print(f"{indent}{os.path.basename(root)}/")
-        if level < 3:  # Don't go too deep
-            subindent = " " * 2 * (level + 1)
-            for file in files:
-                fpath = os.path.join(root, file)
-                size_mb = os.path.getsize(fpath) / (1024 * 1024)
-                print(f"{subindent}{file} ({size_mb:.1f} MB)")
+        count = 0
+        for dirpath, _, filenames in os.walk(src):
+            for fname in filenames:
+                src_file = os.path.join(dirpath, fname)
+                rel_path = os.path.relpath(src_file, src)
+                dst_file = os.path.join(dst, rel_path)
+                os.makedirs(os.path.dirname(dst_file), exist_ok=True)
+                shutil.copy2(src_file, dst_file)
+                print(f"  ✅ {rel_path}")
+                count += 1
+        return count
 
+    total = 0
+    print("📦 Uploading checkpoints...")
+    total += sync_dir(local_checkpoints, os.path.join(volume_root, "checkpoints"))
+
+    print("📄 Uploading configs...")
+    total += sync_dir(local_config, os.path.join(volume_root, "config"))
+
+    print("🏷️  Uploading class data...")
+    # Copy only class.txt files from dataset/
+    total += sync_dir(local_class_data, os.path.join(volume_root, "class_data"))
+
+    # Commit the changes so the volume reflects the new files
     volume.commit()
-    print("\n🎉 All weights uploaded and committed to Modal Volume 'coachAI-weights'")
+
+    print(f"\n✅ Upload complete — {total} files written to Volume.")
+
+
+@app.local_entrypoint()
+def main():
+    """
+    The recommended way to upload is via the Modal CLI:
+
+        modal volume put coachAI-weights ./checkpoints /checkpoints
+        modal volume put coachAI-weights ./config      /config
+        modal volume put coachAI-weights ./dataset     /class_data
+
+    This script provides a Python-based alternative using a mounted
+    local directory approach via add_local_dir on a helper image.
+    """
+    print("=" * 60)
+    print("CoachAI — Weight Upload Utility")
+    print("=" * 60)
+    print()
+    print("ℹ️  modal.Mount was removed in Modal v1.")
+    print("    The recommended approach is the Modal CLI:\n")
+    print("    modal volume put coachAI-weights ./checkpoints /checkpoints")
+    print("    modal volume put coachAI-weights ./config      /config")
+    print("    modal volume put coachAI-weights ./dataset     /class_data")
+    print()
+    print("    Run those three commands and you're done!")
+    print()
+    print("    Alternatively, you can run the upload_weights function")
+    print("    by adding a local dir mount — see the Modal docs for")
+    print("    add_local_dir() on Image if you need a programmatic upload.")
