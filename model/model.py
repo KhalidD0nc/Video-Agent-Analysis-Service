@@ -168,7 +168,7 @@ class TDEEDModel(BaseRGBModel):
         
         def update_pred_head(self, num_classes = [1, 1]):
             self._pred_fine = FC2Layers(self._feat_dim, num_classes)
-            self._pred_fine = self._pred_fine.cuda()
+            self._pred_fine = self._pred_fine.to(next(self.parameters()).device)
             self._double_head = True
 
         def print_stats(self):
@@ -181,8 +181,8 @@ class TDEEDModel(BaseRGBModel):
             print('  Head:',
                 sum(p.numel() for p in self._pred_fine.parameters()))
 
-    def __init__(self, device='cuda', args=None):
-        self.device = device
+    def __init__(self, device='cpu', args=None):
+        self.device = torch.device(device) if isinstance(device, str) else device
         self._model = TDEEDModel.Impl(args=args)
         self._model.print_stats()
         self._args = args
@@ -262,7 +262,7 @@ class TDEEDModel(BaseRGBModel):
                 label = label.flatten() if len(label.shape) == 2 \
                     else label.view(-1, label.shape[-1])
 
-                with torch.cuda.amp.autocast():
+                with torch.amp.autocast(device_type=self.device.type, enabled=self.device.type != 'cpu'):
                     pred, y = self._model(frame, y = label, inference=inference)
 
                     if 'labelD' in batch.keys():
@@ -343,7 +343,7 @@ class TDEEDModel(BaseRGBModel):
 
         self._model.eval()
         with torch.no_grad():
-            with torch.cuda.amp.autocast() if use_amp else nullcontext():
+            with torch.amp.autocast(device_type=self.device.type, enabled=use_amp and self.device.type != 'cpu') if use_amp else nullcontext():
                 pred, y = self._model(seq, inference=True, augment_inference = augment_inference)
             if isinstance(pred, dict):
                 predD = pred['displ_feat']

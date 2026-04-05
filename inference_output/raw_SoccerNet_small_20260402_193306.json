@@ -1,0 +1,39 @@
+{
+    "predictions": [
+        {
+            "frame": 2232,
+            "label": "Kick-off",
+            "confidence": 0.402587890625
+        },
+        {
+            "frame": 2712,
+            "label": "Ball out of play",
+            "confidence": 0.306365966796875
+        },
+        {
+            "frame": 3384,
+            "label": "Clearance",
+            "confidence": 0.3035736083984375
+        },
+        {
+            "frame": 4272,
+            "label": "Ball out of play",
+            "confidence": 0.3282470703125
+        },
+        {
+            "frame": 4968,
+            "label": "Ball out of play",
+            "confidence": 0.769287109375
+        },
+        {
+            "frame": 5880,
+            "label": "Corner",
+            "confidence": 0.61279296875
+        },
+        {
+            "frame": 6636,
+            "label": "Ball out of play",
+            "confidence": 0.58056640625
+        }
+    ]
+}
