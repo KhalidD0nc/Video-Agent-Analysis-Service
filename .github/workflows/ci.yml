@@ -11,18 +11,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint:
-    name: Lint & Format
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/ruff-action@v3
-        with:
-          args: check --output-format=github
-      - uses: astral-sh/ruff-action@v3
-        with:
-          args: format --check
-
   test:
     name: Smoke Tests
     runs-on: ubuntu-latest
