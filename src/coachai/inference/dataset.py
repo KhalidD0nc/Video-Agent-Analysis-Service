@@ -47,9 +47,7 @@ class ActionSpotInferenceDataset(IterableDataset):
         while True:
             if i < 0:
                 if i % self._stride == 0:
-                    frame = np.zeros(
-                        (self._size[1], self._size[0], 3), np.uint8
-                    )
+                    frame = np.zeros((self._size[1], self._size[0], 3), np.uint8)
                     frame = torch.from_numpy(frame).permute(2, 0, 1)
                     buffer.append(frame)
                 i += 1

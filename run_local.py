@@ -27,7 +27,9 @@ def main():
     parser = argparse.ArgumentParser(description="CoachAI — local pipeline runner")
     parser.add_argument("--video_path", type=str, default="", help="Path to a local video file")
     parser.add_argument("--video_url", type=str, default="", help="URL to download video from")
-    parser.add_argument("--weights_dir", type=str, default="weights", help="Directory with model weights")
+    parser.add_argument(
+        "--weights_dir", type=str, default="weights", help="Directory with model weights"
+    )
     parser.add_argument("--inference_threshold", type=float, default=INFERENCE_THRESHOLD)
     parser.add_argument("--skip_gemini", action="store_true", help="Skip Gemini analysis stages")
     args = parser.parse_args()

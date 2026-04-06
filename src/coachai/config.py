@@ -80,10 +80,10 @@ DEDUP_WINDOW_FRAMES = FPS * DEDUP_WINDOW_SECONDS  # 75
 # ── Modal Infrastructure (only used by modal_app.py) ────────────────────────
 MODAL_WEIGHTS_DIR = Path("/weights")
 MODAL_GPU_TYPES = ["T4", "L4", "A10"]
-MODAL_SCALEDOWN_WINDOW = 300     # seconds
+MODAL_SCALEDOWN_WINDOW = 300  # seconds
 MODAL_MIN_CONTAINERS = 0
 MODAL_MAX_CONTAINERS = 3
-MODAL_TIMEOUT = 900              # seconds (15 min)
+MODAL_TIMEOUT = 900  # seconds (15 min)
 
 # ── Supported Datasets ──────────────────────────────────────────────────────
 SUPPORTED_DATASETS = [

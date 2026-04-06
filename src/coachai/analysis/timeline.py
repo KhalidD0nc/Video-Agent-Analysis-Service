@@ -36,7 +36,7 @@ def inference_json_to_csv(
     fps: int = FPS,
 ) -> None:
     """Read a ``results_inference.json`` file and write a CSV with timestamps."""
-    with open(json_path, "r") as f:
+    with open(json_path) as f:
         data = json.load(f)
 
     predictions = data.get("predictions", data)

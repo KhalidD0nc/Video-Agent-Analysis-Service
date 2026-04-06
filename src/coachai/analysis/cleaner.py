@@ -10,7 +10,6 @@ import pandas as pd
 from coachai.analysis.timeline import frame_to_time
 from coachai.config import DEDUP_WINDOW_FRAMES, FPS
 
-
 MODEL_EVENT_TYPE = {
     "SoccerNet_small": "Match Event",
     "SoccerNetBall_challenge1": "Ball Action",
@@ -44,13 +43,15 @@ def merge_and_clean(
     for model_name, events in all_events.items():
         event_type = MODEL_EVENT_TYPE.get(model_name, model_name)
         for e in events:
-            rows.append({
-                "frame": e["frame"],
-                "timestamp": frame_to_time(e["frame"], fps),
-                "label": e["label"],
-                "confidence": e["confidence"],
-                "Event_Type": event_type,
-            })
+            rows.append(
+                {
+                    "frame": e["frame"],
+                    "timestamp": frame_to_time(e["frame"], fps),
+                    "label": e["label"],
+                    "confidence": e["confidence"],
+                    "Event_Type": event_type,
+                }
+            )
 
     if not rows:
         return "", []
@@ -61,9 +62,7 @@ def merge_and_clean(
     # Deduplication: within each label, group events that are within
     # *dedup_window* frames of each other and keep the highest-confidence one.
     df["frame_diff"] = df.groupby("label")["frame"].diff()
-    df["event_block"] = (
-        df["frame_diff"].fillna(dedup_window + 1) > dedup_window
-    ).cumsum()
+    df["event_block"] = (df["frame_diff"].fillna(dedup_window + 1) > dedup_window).cumsum()
     best_indices = df.groupby(["label", "event_block"])["confidence"].idxmax()
 
     df_clean = df.loc[best_indices].copy()

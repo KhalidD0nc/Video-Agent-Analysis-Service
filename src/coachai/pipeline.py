@@ -25,6 +25,7 @@ def run(
     models: list[str] | None = None,
     preloaded_models: dict | None = None,
     volume: object | None = None,
+    primary_team: str = "",
 ) -> dict:
     """Execute the full CoachAI pipeline.
 
@@ -88,8 +89,12 @@ def run(
         else:
             model, classes, config = load_model(model_name, weights_dir, device)
         events = run_inference(
-            model, classes, config, video_path,
-            threshold=inference_threshold, device=device,
+            model,
+            classes,
+            config,
+            video_path,
+            threshold=inference_threshold,
+            device=device,
         )
         all_events[model_name] = events
         print(f"{model_name}: detected {len(events)} events")
@@ -113,7 +118,7 @@ def run(
     if not skip_gemini:
         stage_start = time.time()
         tactical_json, comprehensive_md = run_gemini_analysis(
-            video_path, timeline_csv
+            video_path, timeline_csv, primary_team=primary_team
         )
         results["stages"]["gemini_analysis"] = {
             "duration_seconds": round(time.time() - stage_start, 1),
@@ -125,5 +130,7 @@ def run(
     if not volume and video_url and os.path.exists(video_path):
         os.remove(video_path)
 
+    if primary_team:
+        results["primary_team"] = primary_team
     results["pipeline_duration_seconds"] = round(time.time() - pipeline_start, 1)
     return results

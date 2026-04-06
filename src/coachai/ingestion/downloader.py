@@ -34,6 +34,7 @@ def download_video(video_url: str, output_dir: str = "/tmp") -> str:
 
 # ── Internal helpers ────────────────────────────────────────────────────────
 
+
 def _download_direct(url: str, output_path: str) -> str:
     """Download a direct MP4 / non-YouTube URL via ``curl``."""
     result = subprocess.run(
@@ -56,8 +57,10 @@ def _download_youtube(url: str, output_path: str) -> str:
     """Download a YouTube video via ``yt-dlp`` with multi-strategy fallback."""
     base_cmd = [
         "yt-dlp",
-        "-f", YOUTUBE_FORMAT,
-        "-o", output_path,
+        "-f",
+        YOUTUBE_FORMAT,
+        "-o",
+        output_path,
         "--no-playlist",
         "--quiet",
     ]
@@ -76,9 +79,7 @@ def _download_youtube(url: str, output_path: str) -> str:
 
     last_error = ""
     for cmd in strategies:
-        result = subprocess.run(
-            cmd, capture_output=True, text=True, timeout=DOWNLOAD_TIMEOUT
-        )
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=DOWNLOAD_TIMEOUT)
         if result.returncode == 0:
             break
         last_error = result.stderr[:600]
