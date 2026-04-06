@@ -125,19 +125,3 @@ jobs:
           echo "Timed out waiting for pipeline (10 min)"
           exit 1
 
-      - name: Run full pipeline (sync via analyze)
-        timeout-minutes: 15
-        run: |
-          RESULT=$(curl -sf -X POST "${{ vars.MODAL_ANALYZE_URL }}" \
-            -H "Content-Type: application/json" \
-            -d '{"video_url": "test", "video_path": "/weights/test/downloaded_match_clip.mp4", "primary_team": "Team A"}')
-          echo "$RESULT" | jq 'del(.tactical_report_json, .comprehensive_analysis_md, .timeline_csv)'
-          # Validate result structure
-          echo "$RESULT" | jq -e '.status == "success"'
-          echo "$RESULT" | jq -e '.timeline_csv | length > 0'
-          echo "$RESULT" | jq -e '.tactical_report_json | length > 0'
-          echo "$RESULT" | jq -e '.comprehensive_analysis_md | length > 0'
-          echo "$RESULT" | jq -e '.primary_team == "Team A"'
-          echo "$RESULT" | jq -e '.stages.inference'
-          echo "$RESULT" | jq -e '.stages.gemini_analysis'
-          echo "Sync pipeline completed successfully"
