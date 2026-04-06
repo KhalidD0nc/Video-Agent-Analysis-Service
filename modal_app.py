@@ -121,72 +121,24 @@ class CoachAIService:
         skip_gemini: bool = False,
     ) -> dict:
         import sys
-        import time
-        import os
 
         sys.path.insert(0, "/root/app")
         sys.path.insert(0, "/root/app/src")
 
-        from coachai.config import MODELS_TO_RUN
-        from coachai.ingestion.downloader import download_video
-        from coachai.inference.engine import run_inference
-        from coachai.analysis.cleaner import merge_and_clean
-        from coachai.reporting.gemini_client import run_gemini_analysis
+        from coachai.pipeline import run
 
-        t0 = time.time()
-        results = {"status": "success", "stages": {}}
-
-        # Stage 0: video
-        ts = time.time()
-        if video_path:
-            volume.reload()
-            if not os.path.exists(video_path):
-                raise FileNotFoundError(f"video_path not found: {video_path}")
-        else:
-            video_path = download_video(video_url)
-        results["stages"]["download"] = {"duration_seconds": round(time.time() - ts, 1)}
-
-        # Stage 1: inference (uses pre-loaded models)
-        ts = time.time()
-        all_events = {}
-        for model_name in MODELS_TO_RUN:
-            events = run_inference(
-                self.models[model_name],
-                self.classes[model_name],
-                self.configs[model_name],
-                video_path,
-                threshold=inference_threshold,
-                device=self.device,
-            )
-            all_events[model_name] = events
-            print(f"{model_name}: {len(events)} events")
-        results["stages"]["inference"] = {
-            "duration_seconds": round(time.time() - ts, 1),
-            "events_per_model": {k: len(v) for k, v in all_events.items()},
+        preloaded = {
+            name: (self.models[name], self.classes[name], self.configs[name])
+            for name in self.models
         }
-
-        # Stage 2: merge & clean
-        ts = time.time()
-        timeline_csv, clean_events = merge_and_clean(all_events)
-        results["stages"]["cleaning"] = {
-            "duration_seconds": round(time.time() - ts, 1),
-            "events_after_cleaning": len(clean_events),
-        }
-        results["timeline_csv"] = timeline_csv
-
-        # Stages 3-4: Gemini
-        if not skip_gemini:
-            ts = time.time()
-            tactical_json, comprehensive_md = run_gemini_analysis(video_path, timeline_csv)
-            results["stages"]["gemini_analysis"] = {"duration_seconds": round(time.time() - ts, 1)}
-            results["tactical_report_json"] = tactical_json
-            results["comprehensive_analysis_md"] = comprehensive_md
-
-        if os.path.exists(video_path):
-            os.remove(video_path)
-
-        results["pipeline_duration_seconds"] = round(time.time() - t0, 1)
-        return results
+        return run(
+            video_url=video_url,
+            video_path=video_path,
+            inference_threshold=inference_threshold,
+            skip_gemini=skip_gemini,
+            preloaded_models=preloaded,
+            volume=volume,
+        )
 
 
 # ---------------------------------------------------------------------------

@@ -22,6 +22,7 @@ __pycache__/
 *.mov
 
 # 5. Pipeline Output Directories (Generated data shouldn't be tracked)
+output/
 #inference_output/
 #results_in_csv/
 #final_output/

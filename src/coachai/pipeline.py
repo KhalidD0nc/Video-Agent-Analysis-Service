@@ -23,6 +23,8 @@ def run(
     inference_threshold: float = 0.3,
     skip_gemini: bool = False,
     models: list[str] | None = None,
+    preloaded_models: dict | None = None,
+    volume: object | None = None,
 ) -> dict:
     """Execute the full CoachAI pipeline.
 
@@ -40,6 +42,12 @@ def run(
         If ``True``, skip Stages 3–4 (Gemini analysis).
     models:
         List of model names to run.  Defaults to :data:`MODELS_TO_RUN`.
+    preloaded_models:
+        Pre-loaded model dict keyed by model name. Each value is a tuple
+        of ``(model, classes, config)``.  When provided, ``weights_dir``
+        is ignored and models are not re-loaded.
+    volume:
+        Optional Modal volume to reload before checking ``video_path``.
 
     Returns
     -------
@@ -59,6 +67,8 @@ def run(
     # ── Stage 0: Get video ──────────────────────────────────────────────
     stage_start = time.time()
     if video_path:
+        if volume is not None:
+            volume.reload()
         if not os.path.exists(video_path):
             raise FileNotFoundError(f"video_path not found: {video_path}")
     else:
@@ -73,7 +83,10 @@ def run(
     stage_start = time.time()
     all_events: dict[str, list[dict]] = {}
     for model_name in models:
-        model, classes, config = load_model(model_name, weights_dir, device)
+        if preloaded_models and model_name in preloaded_models:
+            model, classes, config = preloaded_models[model_name]
+        else:
+            model, classes, config = load_model(model_name, weights_dir, device)
         events = run_inference(
             model, classes, config, video_path,
             threshold=inference_threshold, device=device,
@@ -107,6 +120,10 @@ def run(
         }
         results["tactical_report_json"] = tactical_json
         results["comprehensive_analysis_md"] = comprehensive_md
+
+    # Clean up downloaded videos (not user-provided paths from volume)
+    if not volume and video_url and os.path.exists(video_path):
+        os.remove(video_path)
 
     results["pipeline_duration_seconds"] = round(time.time() - pipeline_start, 1)
     return results
