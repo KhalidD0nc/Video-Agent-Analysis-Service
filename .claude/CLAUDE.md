@@ -27,7 +27,7 @@ Goal: Extract a clean `src/coachai/` Python package so `modal_app.py` becomes a 
 - [x] 17. Rewrite `modal_app.py` as thin wrapper (271 lines → was 786) ⚠️ production
 - [x] 18. Delete `inference.py`, `run_pipeline.py`, `run_but_by_youtube.py`
 - [x] 19. Add smoke tests in `tests/` (6 passing)
-- [ ] 20. Merge `refactor/coachai-package` → `main`
+- [x] 20. Merge `refactor/coachai-package` → `main` (ea9d393)
 
 ---
 

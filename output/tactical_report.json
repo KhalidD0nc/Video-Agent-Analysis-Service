@@ -1,0 +1,72 @@
+[
+  {
+    "start_timestamp": "00:41",
+    "end_timestamp": "01:07",
+    "phase_of_play": "Attacking Transition",
+    "possession_team": "Al Jubail",
+    "pitch_zone": "Attacking Third - Wide Channel",
+    "event_type": "Drive and Shot",
+    "tactical_description": "Al Jubail attempts to exploit the wide channels during an attacking transition. The winger drives deep into the box, but the Abha defensive line remains disciplined and compact, forcing a low-probability shot that fails to trouble the goalkeeper.",
+    "attacking_team_execution_rating": 6,
+    "defending_team_execution_rating": 8,
+    "key_tactical_insight": "Al Jubail struggled to convert positional dominance into clear-cut chances due to Abha's effective box-defending.",
+    "coach_actionable_advice": "Focus on overlapping runs and low crosses into the 'corridor of uncertainty' rather than individual drives from wide areas.",
+    "suggested_training_drill": "3v2 Wide Overload to Finish"
+  },
+  {
+    "start_timestamp": "01:30",
+    "end_timestamp": "01:51",
+    "phase_of_play": "Counter-Attack",
+    "possession_team": "Abha",
+    "pitch_zone": "Zone 14 to Penalty Box",
+    "event_type": "Line-Breaking Pass and Goal",
+    "tactical_description": "Abha executes a clinical counter-attack. A high pass bypasses the Al Jubail midfield, finding the striker who utilizes a quick drive to enter the box. The finish is precise, exploiting a lapse in Al Jubail's center-back positioning.",
+    "attacking_team_execution_rating": 9,
+    "defending_team_execution_rating": 4,
+    "key_tactical_insight": "Abha's verticality and clinical finishing punished Al Jubail's high defensive line.",
+    "coach_actionable_advice": "Ensure the defensive line drops deeper when pressure on the ball in midfield is lost to prevent being bypassed by direct high passes.",
+    "suggested_training_drill": "Direct Vertical Transition Drills"
+  },
+  {
+    "start_timestamp": "02:15",
+    "end_timestamp": "02:40",
+    "phase_of_play": "Sustained Pressure",
+    "possession_team": "Al Jubail",
+    "pitch_zone": "Middle Third to Attacking Third",
+    "event_type": "High Press and Long Shot",
+    "tactical_description": "Trailing by a goal, Al Jubail implements a high press, forcing a clearance from Abha. They recover possession quickly and attempt several long-range shots as Abha drops into a low block to protect their lead.",
+    "attacking_team_execution_rating": 5,
+    "defending_team_execution_rating": 7,
+    "key_tactical_insight": "Al Jubail resorted to low-percentage long shots when faced with a compact defensive block.",
+    "coach_actionable_advice": "Encourage patience and 'third-man runs' to break down a low block rather than settling for early shots from distance.",
+    "suggested_training_drill": "Breaking Down the Low Block"
+  },
+  {
+    "start_timestamp": "03:13",
+    "end_timestamp": "03:25",
+    "phase_of_play": "Offensive Transition",
+    "possession_team": "Abha",
+    "pitch_zone": "Central Corridor",
+    "event_type": "Through Ball and Goal",
+    "tactical_description": "Abha capitalizes on Al Jubail's desperate offensive positioning. A quick pass through the middle finds a runner in space. The striker drives toward the goal and finishes calmly, effectively sealing the game with a second goal.",
+    "attacking_team_execution_rating": 9,
+    "defending_team_execution_rating": 3,
+    "key_tactical_insight": "Defensive structure was sacrificed by Al Jubail in pursuit of an equalizer, leading to fatal gaps in the central corridor.",
+    "coach_actionable_advice": "Maintain at least two 'rest-defenders' behind the ball even when chasing a game to prevent easy counter-attacks.",
+    "suggested_training_drill": "Rest-Defense Awareness Scrimmage"
+  },
+  {
+    "start_timestamp": "04:09",
+    "end_timestamp": "04:30",
+    "phase_of_play": "Set Piece",
+    "possession_team": "Al Jubail",
+    "pitch_zone": "Final Third - Central",
+    "event_type": "Free Kick and Shot",
+    "tactical_description": "In the final stages, Al Jubail earns a central free kick. Despite a well-struck shot, the execution lacks the precision to beat the wall and goalkeeper, reflecting their overall frustration in the final third.",
+    "attacking_team_execution_rating": 4,
+    "defending_team_execution_rating": 8,
+    "key_tactical_insight": "Abha's set-piece organization was solid, mirroring their open-play defensive discipline throughout the match.",
+    "coach_actionable_advice": "Work on varied free-kick routines to move the wall or create better shooting angles from central positions.",
+    "suggested_training_drill": "Set Piece Specialization: Walls and Runners"
+  }
+]

@@ -50,7 +50,7 @@ When a main backend application sends a video to this microservice, it follows t
 | **1. Data Ingestion** | Video is downloaded securely from AWS S3 (or YouTube via `yt-dlp`). | Python `boto3` / `yt-dlp` |
 | **2. Computer Vision** | The `inference.py` script runs the SoccerNet models to detect precise tactical actions and ball movements across frames. | PyTorch, MPS/CUDA |
 | **3. Data Engineering** | The backend merges the CSV outputs from the CV models, groups them by standard frame intervals, and assigns tactical phase tags. | `pandas` |
-| **4. AI Generation** | Both the video file and the structured CSV are uploaded to the Gemini API. Gemini outputs a structured JSON analysis, followed by a human-readable Markdown report. | Google Gemini Flash |
+| **4. AI Generation** | Both the video file and the structured CSV are uploaded to the Gemini API. Gemini outputs a structured JSON analysis, followed by a human-readable Markdown report. | Google Gemini 3.1 Flash |
 
 ---
 
