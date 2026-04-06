@@ -74,13 +74,13 @@ jobs:
     steps:
       - name: Health check
         run: |
-          RESPONSE=$(curl -sf "${{ vars.MODAL_HEALTH_URL }}")
+          RESPONSE=$(curl -s "${{ vars.MODAL_HEALTH_URL }}")
           echo "$RESPONSE"
           echo "$RESPONSE" | jq -e '.status == "healthy"'
 
       - name: Input validation
         run: |
-          RESPONSE=$(curl -sf -X POST "${{ vars.MODAL_SUBMIT_URL }}" \
+          RESPONSE=$(curl -s -X POST "${{ vars.MODAL_SUBMIT_URL }}" \
             -H "Content-Type: application/json" -d '{}')
           echo "$RESPONSE"
           echo "$RESPONSE" | jq -e '.status == "error"'
@@ -88,7 +88,7 @@ jobs:
       - name: Run full pipeline (async via submit + status)
         run: |
           # Submit test clip (already on Modal volume — no download needed)
-          JOB=$(curl -sf -X POST "${{ vars.MODAL_SUBMIT_URL }}" \
+          JOB=$(curl -s -X POST "${{ vars.MODAL_SUBMIT_URL }}" \
             -H "Content-Type: application/json" \
             -d '{"video_path": "/weights/test/downloaded_match_clip.mp4", "primary_team": "Team A"}' \
             | jq -r '.job_id')
@@ -96,7 +96,7 @@ jobs:
 
           # Poll /status every 10s, timeout 10 min
           for i in $(seq 1 60); do
-            RESULT=$(curl -sf "${{ vars.MODAL_STATUS_URL }}?job_id=$JOB")
+            RESULT=$(curl -s "${{ vars.MODAL_STATUS_URL }}?job_id=$JOB")
             STATUS=$(echo "$RESULT" | jq -r '.status')
             echo "Attempt $i: $STATUS"
 
