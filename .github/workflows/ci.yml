@@ -74,9 +74,11 @@ jobs:
     steps:
       - name: Health check
         run: |
-          RESPONSE=$(curl -s "${{ vars.MODAL_HEALTH_URL }}")
-          echo "$RESPONSE"
-          echo "$RESPONSE" | jq -e '.status == "healthy"'
+          HTTP_STATUS=$(curl -s -o response.json -w "%{http_code}" "${{ vars.MODAL_HEALTH_URL }}")
+          echo "HTTP status: $HTTP_STATUS"
+          cat response.json
+          [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ] || { echo "Endpoint returned $HTTP_STATUS"; exit 1; }
+          jq -e '.status == "healthy"' response.json
 
       - name: Input validation
         run: |
