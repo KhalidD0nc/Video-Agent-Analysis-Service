@@ -89,8 +89,12 @@ def run(
         else:
             model, classes, config = load_model(model_name, weights_dir, device)
         events = run_inference(
-            model, classes, config, video_path,
-            threshold=inference_threshold, device=device,
+            model,
+            classes,
+            config,
+            video_path,
+            threshold=inference_threshold,
+            device=device,
         )
         all_events[model_name] = events
         print(f"{model_name}: detected {len(events)} events")

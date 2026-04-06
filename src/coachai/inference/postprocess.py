@@ -11,14 +11,11 @@ from collections import defaultdict
 
 import numpy as np
 
-
 # ── Frame prediction → event list ───────────────────────────────────────────
 
-def process_frame_predictions(
-    dataset, classes, pred_dict, high_recall_score_threshold=0.01
-):
+
+def process_frame_predictions(dataset, classes, pred_dict, high_recall_score_threshold=0.01):
     """Convert per-frame score matrices into event lists (with eval stats)."""
-    from util.score import compute_mAPs  # only needed for training eval
 
     classes_inv = {v: k for k, v in classes.items()}
 
@@ -49,26 +46,28 @@ def process_frame_predictions(
             f1.update(label[i], pred[i])
 
             if pred[i] != 0:
-                events.append({
-                    "label": classes_inv[pred[i]],
-                    "frame": i,
-                    "score": scores[i, pred[i]].item(),
-                })
+                events.append(
+                    {
+                        "label": classes_inv[pred[i]],
+                        "frame": i,
+                        "score": scores[i, pred[i]].item(),
+                    }
+                )
 
             for j in classes_inv:
                 if scores[i, j] >= high_recall_score_threshold:
-                    events_high_recall.append({
-                        "label": classes_inv[j],
-                        "frame": i,
-                        "score": scores[i, j].item(),
-                    })
+                    events_high_recall.append(
+                        {
+                            "label": classes_inv[j],
+                            "frame": i,
+                            "score": scores[i, j].item(),
+                        }
+                    )
 
-        pred_events.append({
-            "video": video, "events": events, "fps": fps_dict[video]
-        })
-        pred_events_high_recall.append({
-            "video": video, "events": events_high_recall, "fps": fps_dict[video]
-        })
+        pred_events.append({"video": video, "events": events, "fps": fps_dict[video]})
+        pred_events_high_recall.append(
+            {"video": video, "events": events_high_recall, "fps": fps_dict[video]}
+        )
 
     return err, f1, pred_events, pred_events_high_recall, pred_scores
 
@@ -99,26 +98,28 @@ def process_frame_predictions_challenge(
         events_high_recall = []
         for i in range(pred.shape[0]):
             if pred[i] != 0:
-                events.append({
-                    "label": classes_inv[pred[i]],
-                    "frame": i,
-                    "score": scores[i, pred[i]].item(),
-                })
+                events.append(
+                    {
+                        "label": classes_inv[pred[i]],
+                        "frame": i,
+                        "score": scores[i, pred[i]].item(),
+                    }
+                )
 
             for j in classes_inv:
                 if scores[i, j] >= high_recall_score_threshold:
-                    events_high_recall.append({
-                        "label": classes_inv[j],
-                        "frame": i,
-                        "score": scores[i, j].item(),
-                    })
+                    events_high_recall.append(
+                        {
+                            "label": classes_inv[j],
+                            "frame": i,
+                            "score": scores[i, j].item(),
+                        }
+                    )
 
-        pred_events.append({
-            "video": video, "events": events, "fps": fps_dict[video]
-        })
-        pred_events_high_recall.append({
-            "video": video, "events": events_high_recall, "fps": fps_dict[video]
-        })
+        pred_events.append({"video": video, "events": events, "fps": fps_dict[video]})
+        pred_events_high_recall.append(
+            {"video": video, "events": events_high_recall, "fps": fps_dict[video]}
+        )
 
     return pred_events, pred_events_high_recall, pred_scores
 
@@ -140,24 +141,29 @@ def process_frame_predictions_inference(
     events_high_recall = []
     for i in range(pred.shape[0]):
         if pred[i] != 0:
-            events.append({
-                "label": classes_inv[pred[i]],
-                "frame": i,
-                "score": scores[i, pred[i]].item(),
-            })
+            events.append(
+                {
+                    "label": classes_inv[pred[i]],
+                    "frame": i,
+                    "score": scores[i, pred[i]].item(),
+                }
+            )
 
         for j in classes_inv:
             if scores[i, j] >= high_recall_score_threshold:
-                events_high_recall.append({
-                    "label": classes_inv[j],
-                    "frame": i,
-                    "score": scores[i, j].item(),
-                })
+                events_high_recall.append(
+                    {
+                        "label": classes_inv[j],
+                        "frame": i,
+                        "score": scores[i, j].item(),
+                    }
+                )
 
     return events, events_high_recall, pred_scores
 
 
 # ── Non-Maximum Suppression ──��─────────────────────────���────────────────────
+
 
 def non_maximum_supression(pred, window, threshold=0.0):
     """Hard NMS: keep highest-scoring event, remove neighbours within *window*."""
@@ -180,9 +186,7 @@ def non_maximum_supression(pred, window, threshold=0.0):
                 e1 = max(v, key=lambda x: x["score"])
                 if e1["score"] < threshold:
                     break
-                pos1 = [
-                    pos for pos, e in enumerate(v) if e["frame"] == e1["frame"]
-                ][0]
+                pos1 = [pos for pos, e in enumerate(v) if e["frame"] == e1["frame"]][0]
                 events.append(copy.deepcopy(e1))
                 v.pop(pos1)
                 list_pos = [
@@ -223,9 +227,7 @@ def soft_non_maximum_supression(pred, window, threshold=0.01):
                 e1 = max(v, key=lambda x: x["score"])
                 if e1["score"] < threshold:
                     break
-                pos1 = [
-                    pos for pos, e in enumerate(v) if e["frame"] == e1["frame"]
-                ][0]
+                pos1 = [pos for pos, e in enumerate(v) if e["frame"] == e1["frame"]][0]
                 events.append(copy.deepcopy(e1))
                 list_pos = [
                     pos
@@ -251,8 +253,8 @@ def soft_non_maximum_supression(pred, window, threshold=0.01):
 
 # ── Helper stat classes ─���─────────────────────────���─────────────────────────
 
-class ErrorStat:
 
+class ErrorStat:
     def __init__(self):
         self._total = 0
         self._err = 0
@@ -269,7 +271,6 @@ class ErrorStat:
 
 
 class ForegroundF1:
-
     def __init__(self):
         self._tp = defaultdict(int)
         self._fp = defaultdict(int)

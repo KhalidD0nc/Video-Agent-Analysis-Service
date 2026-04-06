@@ -15,10 +15,9 @@ from tqdm import tqdm
 
 from coachai.config import (
     FRAME_SIZE,
-    MODELS_TO_RUN,
     STRIDE_MAP,
-    WINDOWS_MAP,
     WINDOWS,
+    WINDOWS_MAP,
 )
 from coachai.inference.dataset import ActionSpotInferenceDataset
 from coachai.inference.io import load_classes, load_json
@@ -59,7 +58,7 @@ def build_args(model_name: str, config: dict, device: torch.device) -> argparse.
     args.only_test = config["only_test"]
     args.criterion = config["criterion"]
     args.num_workers = config["num_workers"]
-    args.pretrain = config.get("pretrain", None)
+    args.pretrain = config.get("pretrain")
     args.device = device
     args.acc_grad_iter = 1
     args.seed = 1
@@ -125,9 +124,7 @@ def run_inference(
     inference_dataset = ActionSpotInferenceDataset(
         video_path,
         clip_len=clip_len,
-        overlap_len=(clip_len // 4 * 3)
-        if config["dataset"] != "soccernet"
-        else (clip_len // 2),
+        overlap_len=(clip_len // 4 * 3) if config["dataset"] != "soccernet" else (clip_len // 2),
         stride=stride,
         dataset=config["dataset"],
         size=FRAME_SIZE,
@@ -165,7 +162,10 @@ def run_inference(
             support[start:end] += (pred_scores.sum(axis=1) != 0) * 1
 
     _, pred_events_high_recall, _ = process_frame_predictions_inference(
-        config["dataset"], classes, predictions, support,
+        config["dataset"],
+        classes,
+        predictions,
+        support,
         high_recall_score_threshold=threshold,
     )
 
@@ -177,10 +177,12 @@ def run_inference(
 
     events = []
     for event in pred_events_nms[0]["events"]:
-        events.append({
-            "frame": int(event["frame"]) * stride,
-            "label": event["label"],
-            "confidence": round(float(event["score"]), 4),
-        })
+        events.append(
+            {
+                "frame": int(event["frame"]) * stride,
+                "label": event["label"],
+                "confidence": round(float(event["score"]), 4),
+            }
+        )
 
     return events

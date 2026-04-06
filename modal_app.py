@@ -57,13 +57,17 @@ image = (
         "python-dotenv==1.2.1",
         "fastapi[standard]",
     )
-    .env({
-        "WANDB_MODE": "offline",
-        "PYTORCH_CUDA_ALLOC_CONF": "expandable_segments:True",
-    })
+    .env(
+        {
+            "WANDB_MODE": "offline",
+            "PYTORCH_CUDA_ALLOC_CONF": "expandable_segments:True",
+        }
+    )
     # Source dirs baked in last (Modal v1 rule)
     .add_local_dir(os.path.join(os.path.dirname(__file__), "model"), remote_path="/root/app/model")
-    .add_local_dir(os.path.join(os.path.dirname(__file__), "dataset"), remote_path="/root/app/dataset")
+    .add_local_dir(
+        os.path.join(os.path.dirname(__file__), "dataset"), remote_path="/root/app/dataset"
+    )
     .add_local_dir(os.path.join(os.path.dirname(__file__), "util"), remote_path="/root/app/util")
     .add_local_dir(os.path.join(os.path.dirname(__file__), "src"), remote_path="/root/app/src")
 )
@@ -72,6 +76,7 @@ image = (
 # ---------------------------------------------------------------------------
 # 2. GPU SERVICE (persistent model loading)
 # ---------------------------------------------------------------------------
+
 
 @app.cls(
     image=image,
@@ -89,22 +94,21 @@ class CoachAIService:
     @modal.enter()
     def load_models(self):
         import sys
+
         import torch
 
         sys.path.insert(0, "/root/app")
         sys.path.insert(0, "/root/app/src")
 
-        from coachai.inference.engine import build_args, load_model
         from coachai.config import MODELS_TO_RUN
+        from coachai.inference.engine import load_model
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         print(f"Container booted on [{self.device.type.upper()}]")
 
         self.models, self.classes, self.configs = {}, {}, {}
         for model_name in MODELS_TO_RUN:
-            model, classes, config = load_model(
-                model_name, str(WEIGHTS_DIR), self.device
-            )
+            model, classes, config = load_model(model_name, str(WEIGHTS_DIR), self.device)
             self.models[model_name] = model
             self.classes[model_name] = classes
             self.configs[model_name] = config
@@ -146,6 +150,7 @@ class CoachAIService:
 # ---------------------------------------------------------------------------
 # 3. WEB ENDPOINTS
 # ---------------------------------------------------------------------------
+
 
 @app.function(image=image, timeout=30)
 @modal.fastapi_endpoint(method="POST", docs=True)
@@ -201,6 +206,7 @@ def status(job_id: str) -> dict:
 def analyze(request: dict) -> dict:
     """Synchronous analysis (testing / short videos only)."""
     import sys
+
     sys.path.insert(0, "/root/app")
 
     video_url = request.get("video_url", "")
@@ -219,6 +225,7 @@ def analyze(request: dict) -> dict:
 def health() -> dict:
     """Health check."""
     from coachai.config import MODELS_TO_RUN
+
     return {
         "status": "healthy",
         "service": "CoachAI Video Analysis Agent",

@@ -1,0 +1,138 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint & Format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/ruff-action@v3
+        with:
+          args: check --output-format=github
+      - uses: astral-sh/ruff-action@v3
+        with:
+          args: format --check
+
+  test:
+    name: Smoke Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ hashFiles('requirements-mac.txt') }}
+          restore-keys: pip-
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements-mac.txt
+          pip install -e .
+          pip install pytest
+
+      - name: Verify package imports
+        run: python -c "from coachai.config import MODELS_TO_RUN; print('OK:', MODELS_TO_RUN)"
+
+      - name: Run smoke tests
+        run: pytest tests/ -v
+
+  production-path-guard:
+    name: Production Path Guard
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for production path changes
+        run: |
+          PROD_FILES="modal_app.py src/coachai/pipeline.py src/coachai/inference/engine.py"
+          CHANGED=""
+          for f in $PROD_FILES; do
+            if git diff --name-only origin/main...HEAD | grep -q "^$f$"; then
+              CHANGED="$CHANGED $f"
+            fi
+          done
+          if [ -n "$CHANGED" ]; then
+            echo "::warning::Production-critical files changed:$CHANGED — ensure extra review"
+            echo "## Production Path Changes Detected" >> "$GITHUB_STEP_SUMMARY"
+            echo "The following critical files were modified:" >> "$GITHUB_STEP_SUMMARY"
+            echo "$CHANGED" | tr ' ' '\n' | sed '/^$/d' | sed 's/^/- /' >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "These files require careful review before merge." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  endpoint-test:
+    name: Live Endpoint Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Health check
+        run: |
+          RESPONSE=$(curl -sf "${{ vars.MODAL_ENDPOINT_URL }}/health")
+          echo "$RESPONSE"
+          echo "$RESPONSE" | jq -e '.status == "healthy"'
+
+      - name: Input validation
+        run: |
+          RESPONSE=$(curl -sf -X POST "${{ vars.MODAL_ENDPOINT_URL }}/submit" \
+            -H "Content-Type: application/json" -d '{}')
+          echo "$RESPONSE"
+          echo "$RESPONSE" | jq -e '.status == "error"'
+
+      - name: Run full pipeline
+        run: |
+          # Submit test clip (already on Modal volume — no download needed)
+          JOB=$(curl -sf -X POST "${{ vars.MODAL_ENDPOINT_URL }}/submit" \
+            -H "Content-Type: application/json" \
+            -d '{"video_path": "/weights/test/downloaded_match_clip.mp4", "primary_team": "Team A"}' \
+            | jq -r '.job_id')
+          echo "Job ID: $JOB"
+
+          # Poll /status every 10s, timeout 10 min
+          for i in $(seq 1 60); do
+            RESULT=$(curl -sf "${{ vars.MODAL_ENDPOINT_URL }}/status?job_id=$JOB")
+            STATUS=$(echo "$RESULT" | jq -r '.status')
+            echo "Attempt $i: $STATUS"
+
+            if [ "$STATUS" = "completed" ]; then
+              echo "$RESULT" | jq '.result | del(.tactical_report_json, .comprehensive_analysis_md, .timeline_csv)'
+              # Validate result structure
+              echo "$RESULT" | jq -e '.result.status == "success"'
+              echo "$RESULT" | jq -e '.result.timeline_csv | length > 0'
+              echo "$RESULT" | jq -e '.result.tactical_report_json | length > 0'
+              echo "$RESULT" | jq -e '.result.comprehensive_analysis_md | length > 0'
+              echo "$RESULT" | jq -e '.result.primary_team == "Team A"'
+              echo "$RESULT" | jq -e '.result.stages.inference'
+              echo "$RESULT" | jq -e '.result.stages.gemini_analysis'
+              echo "Pipeline completed successfully"
+              exit 0
+            fi
+
+            if [ "$STATUS" = "error" ]; then
+              echo "Pipeline failed:"
+              echo "$RESULT" | jq .
+              exit 1
+            fi
+
+            sleep 10
+          done
+          echo "Timed out waiting for pipeline (10 min)"
+          exit 1
