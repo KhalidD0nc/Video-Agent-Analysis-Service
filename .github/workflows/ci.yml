@@ -86,21 +86,21 @@ jobs:
     steps:
       - name: Health check
         run: |
-          RESPONSE=$(curl -sf "${{ vars.MODAL_ENDPOINT_URL }}/health")
+          RESPONSE=$(curl -sf "${{ vars.MODAL_HEALTH_URL }}")
           echo "$RESPONSE"
           echo "$RESPONSE" | jq -e '.status == "healthy"'
 
       - name: Input validation
         run: |
-          RESPONSE=$(curl -sf -X POST "${{ vars.MODAL_ENDPOINT_URL }}/submit" \
+          RESPONSE=$(curl -sf -X POST "${{ vars.MODAL_SUBMIT_URL }}" \
             -H "Content-Type: application/json" -d '{}')
           echo "$RESPONSE"
           echo "$RESPONSE" | jq -e '.status == "error"'
 
-      - name: Run full pipeline
+      - name: Run full pipeline (async via submit + status)
         run: |
           # Submit test clip (already on Modal volume — no download needed)
-          JOB=$(curl -sf -X POST "${{ vars.MODAL_ENDPOINT_URL }}/submit" \
+          JOB=$(curl -sf -X POST "${{ vars.MODAL_SUBMIT_URL }}" \
             -H "Content-Type: application/json" \
             -d '{"video_path": "/weights/test/downloaded_match_clip.mp4", "primary_team": "Team A"}' \
             | jq -r '.job_id')
@@ -108,7 +108,7 @@ jobs:
 
           # Poll /status every 10s, timeout 10 min
           for i in $(seq 1 60); do
-            RESULT=$(curl -sf "${{ vars.MODAL_ENDPOINT_URL }}/status?job_id=$JOB")
+            RESULT=$(curl -sf "${{ vars.MODAL_STATUS_URL }}?job_id=$JOB")
             STATUS=$(echo "$RESULT" | jq -r '.status')
             echo "Attempt $i: $STATUS"
 
@@ -122,7 +122,7 @@ jobs:
               echo "$RESULT" | jq -e '.result.primary_team == "Team A"'
               echo "$RESULT" | jq -e '.result.stages.inference'
               echo "$RESULT" | jq -e '.result.stages.gemini_analysis'
-              echo "Pipeline completed successfully"
+              echo "Async pipeline completed successfully"
               exit 0
             fi
 
@@ -136,3 +136,20 @@ jobs:
           done
           echo "Timed out waiting for pipeline (10 min)"
           exit 1
+
+      - name: Run full pipeline (sync via analyze)
+        timeout-minutes: 15
+        run: |
+          RESULT=$(curl -sf -X POST "${{ vars.MODAL_ANALYZE_URL }}" \
+            -H "Content-Type: application/json" \
+            -d '{"video_url": "test", "video_path": "/weights/test/downloaded_match_clip.mp4", "primary_team": "Team A"}')
+          echo "$RESULT" | jq 'del(.tactical_report_json, .comprehensive_analysis_md, .timeline_csv)'
+          # Validate result structure
+          echo "$RESULT" | jq -e '.status == "success"'
+          echo "$RESULT" | jq -e '.timeline_csv | length > 0'
+          echo "$RESULT" | jq -e '.tactical_report_json | length > 0'
+          echo "$RESULT" | jq -e '.comprehensive_analysis_md | length > 0'
+          echo "$RESULT" | jq -e '.primary_team == "Team A"'
+          echo "$RESULT" | jq -e '.stages.inference'
+          echo "$RESULT" | jq -e '.stages.gemini_analysis'
+          echo "Sync pipeline completed successfully"
