@@ -92,7 +92,7 @@ jobs:
           # Submit test clip (already on Modal volume — no download needed)
           JOB=$(curl -s -X POST "${{ vars.MODAL_SUBMIT_URL }}" \
             -H "Content-Type: application/json" \
-            -d '{"video_path": "/weights/test/downloaded_match_clip.mp4", "primary_team": "Team A"}' \
+            -d '{"video_path": "/weights/test/downloaded_match_clip.mp4", "primary_team": "Abha"}' \
             | jq -r '.job_id')
           echo "Job ID: $JOB"
 
