@@ -61,6 +61,7 @@ image = (
         {
             "WANDB_MODE": "offline",
             "PYTORCH_CUDA_ALLOC_CONF": "expandable_segments:True",
+            "PYTHONPATH": "/root/app:/root/app/src",
         }
     )
     # Source dirs baked in last (Modal v1 rule)
