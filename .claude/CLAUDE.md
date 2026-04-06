@@ -1,68 +1,43 @@
-# CoachAI — Refactor Progress Tracker
+# Role
 
-Branch: `refactor/coachai-package`
-Goal: Extract a clean `src/coachai/` Python package so `modal_app.py` becomes a thin HTTP adapter.
+You are the **CoachAI engineering assistant** — a senior ML systems engineer embedded in this project.
+
+**Project context:**
+CoachAI is a sports video analysis pipeline that takes a raw video URL → runs T-DEED action-spotting inference → cleans/deduplicates events → passes the timeline to Gemini for multimodal tactical analysis → returns structured JSON + Markdown coaching reports. It is deployed as a serverless GPU endpoint on Modal.
+
+**Your responsibilities:**
+- Maintain the `src/coachai/` package: ingestion, inference, analysis, reporting, pipeline orchestrator
+- Keep `modal_app.py` as a thin HTTP adapter — no business logic should live there
+- Guard inference correctness: T-DEED model loading, NMS post-processing, stride/overlap constants in `config.py`
+- Protect production paths: any change to `modal_app.py`, `pipeline.py`, or `engine.py` must be verified before merging
+- Enforce one-commit-per-step discipline and no silent behavior changes
+
+**Tech stack:** Python 3.11 · PyTorch · Modal (serverless GPU) · Gemini API · yt-dlp · T-DEED
+
+---
+
+# Feature: Primary Team Perspective
+
+Branch: `feat/primary-team`
+Goal: Add a `primary_team` parameter so Gemini writes analysis from the coach's team perspective instead of neutral coverage.
 
 ---
 
 ## Checklist
 
-- [x] 0. Write this tracker to `.claude/CLAUDE.md`
-- [x] 1. Create branch `refactor/coachai-package`
-- [x] 2. ~~Delete `model/impl/gsf.py` + `gsm.py`~~ — SKIP: `model/shift.py` imports both files; they are live code
-- [x] 3. Add `.env` to `.gitignore` + create `.env.example`
-- [x] 4. Create `src/coachai/` skeleton + `pyproject.toml`
-- [x] 5. Create `coachai/config.py` (all scattered constants)
-- [x] 6. Create `coachai/reporting/prompts.py` (extract inline prompt strings)
-- [x] 7. Create `coachai/inference/io.py` (consolidates `util/io.py` + `util/dataset.py`; originals kept until consumers migrate)
-- [x] 8. Create `coachai/ingestion/downloader.py` (video download logic)
-- [x] 9. Create `coachai/inference/dataset.py` (ActionSpotInferenceDataset from frame.py)
-- [x] 10. Create `coachai/inference/postprocess.py` (NMS + event extraction from eval.py)
-- [x] 11. Create `coachai/inference/engine.py` (T-DEED wrapper)
-- [x] 12. Create `coachai/analysis/timeline.py` (frame→timestamp, JSON→CSV)
-- [x] 13. Create `coachai/analysis/cleaner.py` (merge + dedup logic)
-- [x] 14. Create `coachai/reporting/gemini_client.py` (Gemini API wrapper)
-- [x] 15. Create `coachai/pipeline.py` (single orchestrator)
-- [x] 16. Create `run_local.py` (thin CLI) + smoke test
-- [x] 17. Rewrite `modal_app.py` as thin wrapper (271 lines → was 786) ⚠️ production
-- [x] 18. Delete `inference.py`, `run_pipeline.py`, `run_but_by_youtube.py`
-- [x] 19. Add smoke tests in `tests/` (6 passing)
-- [x] 20. Merge `refactor/coachai-package` → `main` (ea9d393)
+- [ ] 1. Update `src/coachai/reporting/prompts.py` — add `primary_team: str = ""` to both prompt functions; inject coaching perspective preamble when provided
+- [ ] 2. Update `src/coachai/reporting/gemini_client.py` — add `primary_team: str = ""` param, pass through to prompt functions
+- [ ] 3. Update `src/coachai/pipeline.py` — add `primary_team: str = ""` param, pass through to `run_gemini_analysis()`, include in results dict
+- [ ] 4. Update `modal_app.py` — add `primary_team` to `run_pipeline()`, `submit()`, `analyze()` endpoints
+- [ ] 5. Verify: existing tests pass, import checks, `modal serve` dry-run
 
----
-
-## Target Structure
-
-```
-src/
-└── coachai/
-    ├── __init__.py
-    ├── config.py
-    ├── pipeline.py
-    ├── ingestion/
-    │   ├── __init__.py
-    │   └── downloader.py
-    ├── inference/
-    │   ├── __init__.py
-    │   ├── engine.py
-    │   ├── dataset.py
-    │   ├── postprocess.py
-    │   └── io.py
-    ├── analysis/
-    │   ├── __init__.py
-    │   ├── cleaner.py
-    │   └── timeline.py
-    └── reporting/
-        ├── __init__.py
-        ├── gemini_client.py
-        └── prompts.py
-```
+## Design
+- When `primary_team` is provided: Gemini frames all advice from that team's coaching staff POV — their strengths, areas to improve, opponent scouting intel, team-specific drills
+- When `primary_team=""` (default): current neutral behavior — fully backward compatible
+- Only Stages 3–4 (Gemini) are affected — T-DEED inference is team-agnostic
 
 ---
 
 ## Key Rules
 - One step = one commit
-- No behavior changes — structure only
-- Steps 9, 10, 11 touch files used by inference — verify with import check after each
-- Step 17 is production (`modal_app.py`) — do last, verify with `modal run` dry-run before deploying
-- Do NOT merge to `main` until step 17 is verified
+- Do NOT merge to `main` until step 5 is verified

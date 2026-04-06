@@ -119,6 +119,7 @@ class CoachAIService:
         video_path: str = "",
         inference_threshold: float = 0.3,
         skip_gemini: bool = False,
+        primary_team: str = "",
     ) -> dict:
         import sys
 
@@ -138,6 +139,7 @@ class CoachAIService:
             skip_gemini=skip_gemini,
             preloaded_models=preloaded,
             volume=volume,
+            primary_team=primary_team,
         )
 
 
@@ -159,6 +161,7 @@ def submit(request: dict) -> dict:
         inference_threshold=request.get("inference_threshold", 0.3),
         skip_gemini=request.get("skip_gemini", False),
         video_path=video_path,
+        primary_team=request.get("primary_team", ""),
     )
     return {
         "status": "submitted",
@@ -207,6 +210,7 @@ def analyze(request: dict) -> dict:
         video_url=video_url,
         inference_threshold=request.get("inference_threshold", 0.3),
         skip_gemini=request.get("skip_gemini", False),
+        primary_team=request.get("primary_team", ""),
     )
 
 

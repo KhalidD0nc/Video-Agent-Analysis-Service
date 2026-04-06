@@ -22,6 +22,7 @@ def run_gemini_analysis(
     csv_data: str,
     api_key: str | None = None,
     model: str = GEMINI_MODEL,
+    primary_team: str = "",
 ) -> tuple[str, str]:
     """Upload a video to Gemini and run the two-stage tactical analysis.
 
@@ -70,7 +71,7 @@ def run_gemini_analysis(
         # Stage 3: JSON tactical analysis
         response_json = client.models.generate_content(
             model=model,
-            contents=[video_file, json_tactical_prompt(csv_data)],
+            contents=[video_file, json_tactical_prompt(csv_data, primary_team=primary_team)],
         )
         tactical_json = response_json.text
 
@@ -80,7 +81,7 @@ def run_gemini_analysis(
         # Stage 4: Comprehensive text report
         response_text = client.models.generate_content(
             model=model,
-            contents=[video_file, text_report_prompt(csv_data, tactical_json)],
+            contents=[video_file, text_report_prompt(csv_data, tactical_json, primary_team=primary_team)],
         )
         comprehensive_md = response_text.text
 

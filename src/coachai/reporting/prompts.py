@@ -7,11 +7,30 @@ modal_app.py, run_pipeline.py, and run_but_by_youtube.py.
 """
 
 
-def json_tactical_prompt(csv_data: str) -> str:
+def _coaching_perspective(primary_team: str) -> str:
+    """Return the coaching-perspective preamble if a primary team is set."""
+    if not primary_team:
+        return ""
+    return f"""
+**COACHING PERSPECTIVE:**
+You are analyzing this match for the coaching staff of {primary_team}.
+- Frame all tactical advice from {primary_team}'s perspective
+- Highlight what {primary_team} did well and what they need to improve
+- Treat the opponent's actions as scouting intelligence
+- Training drills should address {primary_team}'s specific needs
+"""
+
+
+def json_tactical_prompt(csv_data: str, primary_team: str = "") -> str:
     """Stage 3 — ask Gemini for a structured JSON tactical breakdown."""
+    perspective = _coaching_perspective(primary_team)
+    team_field = ""
+    if primary_team:
+        team_field = f'\n13. "primary_team_perspective": Whether this phase is an opportunity or threat for {primary_team}'
+
     return f"""\
 You are an elite UEFA Pro License Football Analyst and Data Scientist.
-
+{perspective}
 **CRITICAL DATA CONTEXT:**
 Use this CSV data as your absolute source of truth for timestamps and events:
 <csv_data>
@@ -33,14 +52,15 @@ For each distinct tactical phase, generate an object with the following keys:
 9. "defending_team_execution_rating": (1-10 scale)
 10. "key_tactical_insight": One sentence summarizing the core lesson or error for both teams.
 11. "coach_actionable_advice": Direct, practical instructions for the coach.
-12. "suggested_training_drill": A specific, named training ground drill."""
+12. "suggested_training_drill": A specific, named training ground drill.{team_field}"""
 
 
-def text_report_prompt(csv_data: str, tactical_json: str) -> str:
+def text_report_prompt(csv_data: str, tactical_json: str, primary_team: str = "") -> str:
     """Stage 4 — ask Gemini for a comprehensive Markdown coaching report."""
+    perspective = _coaching_perspective(primary_team)
     return f"""\
 You are the Head Coach's First Assistant.
-You are analyzing the provided match video. You must also use the raw CSV timeline and the structured JSON tactical data we just extracted.
+{perspective}You are analyzing the provided match video. You must also use the raw CSV timeline and the structured JSON tactical data we just extracted.
 
 <csv_data>
 {csv_data}
