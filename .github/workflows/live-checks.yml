@@ -1,0 +1,82 @@
+name: Live Endpoint Checks
+
+# Explicitly dispatched: this job can use paid GPU and Gemini resources.
+on:
+  workflow_dispatch:
+    inputs:
+      video_path:
+        description: Existing test clip inside the mounted weights volume
+        required: true
+        default: /weights/test/downloaded_match_clip.mp4
+        type: string
+      primary_team:
+        description: Team perspective to validate in the returned result
+        required: true
+        default: Team A
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: coachai-live-checks
+  cancel-in-progress: false
+
+jobs:
+  endpoint-test:
+    name: Live Endpoint Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      HEALTH_URL: ${{ vars.MODAL_HEALTH_URL }}
+      SUBMIT_URL: ${{ vars.MODAL_SUBMIT_URL }}
+      STATUS_URL: ${{ vars.MODAL_STATUS_URL }}
+      TEST_VIDEO_PATH: ${{ inputs.video_path }}
+      PRIMARY_TEAM: ${{ inputs.primary_team }}
+    steps:
+      - name: Require configured endpoint URLs
+        run: |
+          test -n "$HEALTH_URL" && test -n "$SUBMIT_URL" && test -n "$STATUS_URL" || {
+            echo "::error::Set MODAL_HEALTH_URL, MODAL_SUBMIT_URL, and MODAL_STATUS_URL repository variables."
+            exit 1
+          }
+      - name: Health check
+        run: |
+          curl --fail-with-body --silent --show-error --max-time 60 "$HEALTH_URL" -o response.json
+          jq -e '.status == "healthy"' response.json
+      - name: Validate missing input
+        run: |
+          curl --fail-with-body --silent --show-error --max-time 60 "$SUBMIT_URL" \
+            -H "Content-Type: application/json" -d '{}' -o response.json
+          jq -e '.status == "error"' response.json
+      - name: Submit a test clip and validate results
+        run: |
+          BODY=$(jq -n --arg video "$TEST_VIDEO_PATH" --arg team "$PRIMARY_TEAM" '{video_path: $video, primary_team: $team}')
+          curl --fail-with-body --silent --show-error --max-time 60 "$SUBMIT_URL" \
+            -H "Content-Type: application/json" -d "$BODY" -o submission.json
+          jq -e '.status == "submitted" and (.job_id | type == "string" and length > 0)' submission.json
+          JOB=$(jq -r '.job_id' submission.json)
+          for i in $(seq 1 60); do
+            curl --fail-with-body --silent --show-error --max-time 60 --get "$STATUS_URL" \
+              --data-urlencode "job_id=$JOB" -o result.json
+            STATUS=$(jq -r '.status' result.json)
+            echo "Attempt $i: $STATUS"
+            if [ "$STATUS" = "completed" ]; then
+              jq -e --arg team "$PRIMARY_TEAM" '
+                .result.status == "success" and
+                (.result.timeline_csv | length > 0) and
+                (.result.tactical_report_json | fromjson | type == "object" and (has("error") | not)) and
+                (.result.comprehensive_analysis_md | length > 0) and
+                .result.primary_team == $team and
+                (.result.stages | has("inference") and has("gemini_analysis"))
+              ' result.json
+              exit 0
+            fi
+            if [ "$STATUS" != "pending" ]; then
+              echo "::error::Analysis returned an unexpected or failed status."
+              exit 1
+            fi
+            sleep 10
+          done
+          echo "::error::Timed out waiting for the analysis result."
+          exit 1
