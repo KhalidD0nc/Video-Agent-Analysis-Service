@@ -1,165 +1,174 @@
-# ⚽ Video-Analysis-Agent-CoachAi
+<p align="center">
+  <img src="docs/assets/hero.svg" alt="CoachAI — football video to structured coaching intelligence" width="100%" />
+</p>
 
-![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
-![PyTorch](https://img.shields.io/badge/PyTorch-Deep%20Learning-ee4c2c)
-![Gemini](https://img.shields.io/badge/Google%20Gemini-AI%20Analysis-1a73e8)
-![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Mac-lightgrey)
+<p align="center">
+  <a href="https://github.com/KhalidD0nc/Video-Agent-Analysis-Service/actions/workflows/ci.yml"><img src="https://github.com/KhalidD0nc/Video-Agent-Analysis-Service/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI" /></a>
+  <img src="https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white" alt="Python 3.11" />
+  <img src="https://img.shields.io/badge/PyTorch-T--DEED-EE4C2C?logo=pytorch&logoColor=white" alt="PyTorch and T-DEED" />
+  <img src="https://img.shields.io/badge/Modal-GPU%20inference-78D64B" alt="Modal GPU inference" />
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-GPL--3.0-blue" alt="GPL-3.0 license" /></a>
+</p>
 
-**An AI-Powered Football Tactical Analysis System** *Graduation Project - College of Computer and Information Sciences, Al Imam Mohammad Ibn Saud Islamic University.*
+<p align="center"><strong>Turn match footage into an event timeline, tactical findings, and a coaching report.</strong></p>
+<p align="center">
+  <a href="#how-it-works">Architecture</a> ·
+  <a href="#run-locally">Quick start</a> ·
+  <a href="docs/API.md">HTTP API</a> ·
+  <a href="CONTRIBUTING.md">Development workflow</a> ·
+  <a href="https://github.com/KhalidD0nc/offside-frontend">Offside dashboard ↗</a>
+</p>
 
-## 📖 Overview
-CoachAi is an automated, end-to-end pipeline designed to act as an elite football tactical analyst. It extracts gameplay footage directly from YouTube, processes it through state-of-the-art Computer Vision models to detect complex tactical events, and utilizes Large Language Models (LLMs) to generate professional, coach-ready tactical reports and training recommendations.
+CoachAI combines temporal action spotting with multimodal analysis. T-DEED models identify candidate football events; a cleaning stage merges them into a timestamped timeline; Gemini uses the video and timeline to produce structured tactical findings and a Markdown report.
 
-## 🏗️ System Architecture
-The pipeline operates in 4 distinct stages:
-1. **Data Ingestion:** Automated downloading of match clips via `yt-dlp`.
-2. **Computer Vision (Stage 1):** Running `SoccerNet` models to detect actions and ball movements (Device-Agnostic: supports CUDA and MPS).
-3. **Data Engineering (Stage 2):** Cleaning, merging, and grouping frames into distinct tactical phases using `pandas`.
-4. **LLM Analysis (Stages 3 & 4):** Uploading the video and structured CSV to Google Gemini 3.1 Flash to generate a detailed JSON tactical breakdown and a final Markdown comprehensive report.
+The same `coachai` package powers a local CLI and a Modal HTTP adapter. This repository contains the analysis service; [Offside](https://github.com/KhalidD0nc/offside-frontend) is the companion coaching dashboard.
 
-## ⚙️ Installation & Setup (For Developers)
+## What it produces
 
-We enforce strict environment isolation. Please follow the instructions specific to your operating system.
+| Output | Purpose |
+| --- | --- |
+| `timeline.csv` | Cleaned events with timestamps, labels, and confidence values |
+| `tactical_report.json` | Tactical analysis returned by Gemini |
+| `analysis.md` | A narrative coaching report |
+| Stage timings | Download, inference, cleaning, and reporting durations |
 
-### 1. Clone the Repository
-```bash
-git clone [https://github.com/Marwan915/Video-Analysis-Agent-CoachAi.git](https://github.com/Marwan915/Video-Analysis-Agent-CoachAi.git)
-cd Video-Analysis-Agent-CoachAi
+The API also accepts `primary_team` to frame reports from one team's coaching perspective. Generated reports depend on video quality, model detections, and the reporting model; review findings against the footage.
 
+## How it works
+
+```mermaid
+flowchart LR
+    A[Video URL or local file] --> B[Ingestion]
+    B --> C[T-DEED action spotting]
+    C --> D[Merge and deduplicate]
+    D --> E[Event timeline CSV]
+    E --> F[Gemini tactical analysis]
+    B --> F
+    F --> G[Tactical JSON]
+    G --> H[Markdown coaching report]
 ```
 
-### 2. Create a Virtual Environment
+- **Ingestion:** local files or downloads through `yt-dlp`.
+- **Inference:** `SoccerNet_small` and `SoccerNetBall_challenge1`, with confidence filtering and non-maximum suppression.
+- **Cleaning:** merge detections from both models and deduplicate nearby events.
+- **Reporting:** two Gemini calls produce tactical JSON and a narrative report.
+- **Serving:** asynchronous submission and polling through Modal; models are loaded when a GPU container starts.
 
-```bash
-python -m venv venv
+See [the architecture notes](docs/ARCHITECTURE.md) for module boundaries and the dashboard integration.
 
-```
+## Run locally
 
-### 3. Activate the Environment
+### 1. Prepare the environment
 
-* **Windows:** `.\venv\Scripts\activate`
-* **Mac/Linux:** `source venv/bin/activate`
-
-### 4. Install Dependencies (OS Specific)
-
-Due to hardware acceleration differences (NVIDIA CUDA vs. Apple MPS), install the correct requirements file:
-
-* **For Windows (NVIDIA GPU):**
-```bash
-pip install -r requirements.txt
-
-```
-
-
-* **For Mac (Apple Silicon / Intel):**
-```bash
-pip install -r requirements-mac.txt
-
-```
-
-
-
-### 5. Environment Variables
-
-Create a file named `.env` in the root directory and add your Google Gemini API Key:
-
-```env
-GEMINI_API_KEY="your_api_key_here"
-
-```
-
-*(Note: Do not commit the `.env` file to version control. It is already ignored in `.gitignore`).*
-
-## 🚀 Usage
-
-To run the complete analysis pipeline:
-
-1. Open `run_but_youtube.py` .
-2. Replace the `YOUTUBE_URL` variable with your target match clip.
-3. Execute the script:
+Use **Python 3.11** and install **FFmpeg** for video downloads and processing. CUDA is used when available; the current device selection otherwise falls back to CPU. Apple MPS is not selected by the current runner.
 
 ```bash
-python run_but_youtube.py
-
+git clone https://github.com/KhalidD0nc/Video-Agent-Analysis-Service.git
+cd Video-Agent-Analysis-Service
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements-mac.txt
+python -m pip install -e .
+cp .env.example .env
 ```
 
-or use the video path code in 
+On Windows, activate with `.venv\Scripts\Activate.ps1`. For the pinned NVIDIA CUDA 12.1 stack, use `requirements.txt` instead of `requirements-mac.txt`.
+
+Set `GEMINI_API_KEY` in `.env` for report generation. Use `--skip_gemini` for event extraction without Gemini calls.
+
+### 2. Prepare the model directory
+
+The loader expects checkpoints, configurations, and class labels under one root. From a full clone:
+
 ```bash
-python run_pipeline.py
-
+mkdir -p weights/class_data/soccernet weights/class_data/soccernetball
+cp -R checkpoints config weights/
+cp data/soccernet/class.txt weights/class_data/soccernet/class.txt
+cp data/soccernetball/class.txt weights/class_data/soccernetball/class.txt
 ```
 
-The system will automatically download the video, run the inference, and place the final reports in the `final_output/` directory.
+Expected layout:
 
-## 👥 Author
-
-* **Marwan** 
-
-
-
-
-using :
-
-# T-DEED
-### T-DEED: Temporal-Discriminability Enhancer Encoder-Decoder for Precise Event Spotting in Sports Videos (CVsports '24)
-<a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white"></a>
-[![arXiv](https://img.shields.io/badge/arXiv-2404.05392-red)](https://arxiv.org/abs/2404.05392)
-[![ProjectPage](https://img.shields.io/badge/Project%20Page-green)](https://arturxe2.github.io/projects/T-DEED/)
-[![ExtendedPaper](https://img.shields.io/badge/ExtendedPaper-green)](https://arturxe2.github.io/files/TDEED_Revisited.pdf)
-
-This repository contains the PyTorch implementation of the paper:
-
-**T-DEED: Temporal-Discriminability Enhancer Encoder-Decoder for Precise Event Spotting in Sports Videos**<br>
-*Artur Xarles, Sergio Escalera, Thomas B. Moeslund, and Albert Clapés*<br>
-**10th International Workshop on Computer Vision in Sports (CVsports) at CVPR 2024**<br>
-
-An extension of the paper with additional results can be found in the provided button above (ExtendedPaper).
-
-
-## Overview
-
-This repository builds upon the original [T-DEED implementation](https://github.com/arturxe2/T-DEED) to evaluate the model across additional PES datasets and the broader Action Spotting task, including SoccerNet Action Spotting (SNAS) and SoccerNet Ball Action Spotting (SNBAS). Notably, this implementation was also used to achieve the 1st place in the 2024 SNBAS Challenge.
-
-It contains two distinct releases: the first corresponds to the initial release for the paper, and the second includes an extended evaluation on additional PES datasets along with adaptations for the broader Action Spotting task in SoccerNet.
-
-
-## Environment
-
-You can install the required packages for the project using the following command, with `requirements.txt` specifying the versions of the various packages:
-
-```
-pip install -r requirements.txt
+```text
+weights/
+├── checkpoints/
+│   ├── SoccerNet/SoccerNet_small/checkpoint_best.pt
+│   └── SoccerNetBall/SoccerNetBall_challenge1/checkpoint_best.pt
+├── config/
+│   ├── SoccerNet/SoccerNet_small.json
+│   └── SoccerNetBall/SoccerNetBall_challenge1.json
+└── class_data/
+    ├── soccernet/class.txt
+    └── soccernetball/class.txt
 ```
 
-## Perform inference
+### 3. Analyze a clip
 
-You can perform inference on a single video using the `inference.py` script. Run it from the command line as follows:
+```bash
+# Extract events from a local video, without Gemini reporting
+python run_local.py --video_path ./match.mp4 --weights_dir ./weights --skip_gemini
 
+# Generate the timeline and reports using the configured Gemini key
+python run_local.py --video_path ./match.mp4 --weights_dir ./weights
+
+# Download a video before running the pipeline
+python run_local.py --video_url "https://www.youtube.com/watch?v=VIDEO_ID" --weights_dir ./weights
 ```
-python3 inference.py --model <model_name> --video_path <video_path> --frame_width <frame_width> --frame_height <frame_height> --inference_threshold <inference_threshold>
+
+Final artifacts are written to `final_output/`. Intermediate predictions and CSV files use `inference_output/` and `results_in_csv/`. Model selection, thresholds, and the Gemini model identifier live in [`src/coachai/config.py`](src/coachai/config.py).
+
+## HTTP service
+
+| Endpoint function | Method | Role |
+| --- | --- | --- |
+| `submit` | POST | Start an asynchronous job and return `job_id` |
+| `status` | GET | Retrieve a pending, completed, or failed job |
+| `analyze` | POST | Run a synchronous analysis for short clips |
+| `health` | GET | Return service metadata and configured models |
+
+Modal exposes separate endpoint URLs for these functions. [API documentation](docs/API.md) includes request/response examples and deployment prerequisites. Deployments are explicit; a Git branch does not deploy a service automatically.
+
+## Repository map
+
+```text
+src/coachai/
+├── ingestion/          # Video downloads
+├── inference/          # Model loading, inference, and post-processing
+├── analysis/           # Cleaning and timeline conversion
+├── reporting/          # Gemini client and prompts
+├── config.py           # Shared model and runtime configuration
+└── pipeline.py         # Pipeline orchestration
+model/                  # T-DEED implementation
+config/                 # Dataset/model configurations
+run_local.py            # Local CLI adapter
+modal_app.py            # Modal GPU and HTTP adapter
+tests/                  # Offline package smoke tests
+docs/                   # Architecture and API reference
 ```
 
-For example, to use a pre-trained SoccerNetBall model:
+## Development and checks
 
+```text
+feature/* → development → staging → main
 ```
-python3 inference.py --model SoccerNetBall_challenge1 --video_path /videos/inference_video.mp4 --frame_width 796 --frame_height 448 --inference_threshold 0.3
+
+`development` integrates changes, `staging` holds release candidates, and `main` is the stable reference. These branches organize source changes; deployed environments require separate credentials and infrastructure configuration.
+
+Run the existing offline suite without downloading PyTorch or using API credentials:
+
+```bash
+python -m pip install -r requirements-dev.txt
+python -m pip install -e .
+python -m pytest tests/ -v
 ```
 
-Ensure that the specified trained model is accessible. The frame width and height must match the resolution used during model training. The inference threshold can be adjusted according to your preference. 
+CI runs these checks on pushes and pull requests targeting all three branches. Live endpoint checks are a separate **manual** workflow because they can consume GPU and Gemini usage. Offline smoke tests do not validate model quality or a deployed endpoint. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Contact
+## Credits and license
 
-If you have any questions related to the code, feel free to contact arturxe@gmail.com.
+CoachAI originated as a graduation project at the College of Computer and Information Sciences, Al Imam Mohammad Ibn Saud Islamic University. The original project documentation credits **Marwan**.
 
-## References
+The action-spotting implementation builds on [T-DEED](https://github.com/arturxe2/T-DEED) by Artur Xarles, Sergio Escalera, Thomas B. Moeslund, and Albert Clapés ([CVsports 2024 paper](https://arxiv.org/abs/2404.05392)). Preserve the upstream attribution when reusing this work.
 
-If you find our work useful, please consider citing our paper.
-```
-@inproceedings{xarles2024t,
-  title={T-DEED: Temporal-Discriminability Enhancer Encoder-Decoder for Precise Event Spotting in Sports Videos},
-  author={Xarles, Artur and Escalera, Sergio and Moeslund, Thomas B and Clap{\'e}s, Albert},
-  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
-  pages={3410--3419},
-  year={2024}
-}
-```
+See [LICENSE](LICENSE) for GPL-3.0 and [LICENSE E2E-Spot](LICENSE%20E2E-Spot) for the included E2E-Spot notice.
