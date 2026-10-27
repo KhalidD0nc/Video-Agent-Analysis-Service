@@ -32,3 +32,9 @@ output/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Local setup and development artifacts
+weights/
+final_output/
+.pytest_cache/
+*.egg-info/

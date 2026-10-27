@@ -1,0 +1,4 @@
+# Dependencies for the existing offline smoke tests; no GPU or API access required.
+numpy==2.3.5
+pandas==3.0.1
+pytest>=8,<10
