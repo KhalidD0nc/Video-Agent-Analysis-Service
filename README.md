@@ -116,7 +116,7 @@ python run_local.py --video_path ./match.mp4 --weights_dir ./weights
 python run_local.py --video_url "https://www.youtube.com/watch?v=VIDEO_ID" --weights_dir ./weights
 ```
 
-Final artifacts are written to `final_output/`. Intermediate predictions and CSV files use `inference_output/` and `results_in_csv/`. Model selection, thresholds, and the Gemini model identifier live in [`src/coachai/config.py`](src/coachai/config.py).
+Final artifacts are written to `final_output/`. The repository also retains sample predictions in `inference_output/` and `results_in_csv/`; the current CLI saves its final artifacts to `final_output/`. Model selection, thresholds, and the Gemini model identifier live in [`src/coachai/config.py`](src/coachai/config.py).
 
 ## HTTP service
 
